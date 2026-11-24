@@ -26,8 +26,8 @@
   "info": "Como o motorista está e se tem condição de esperar",
   "tipo": "opcao",
   "opcoes": [
-   "Bem",
-   "Abalado",
+   "Sim",
+   "Não",
    "Local ruim para esperar"
   ],
   "obrigatoria": "sim",
@@ -36,7 +36,7 @@
    "Tem onde esperar com tranquilidade?"
   ],
   "frases": "\"tomei um susto\", \"tô sozinho no escuro\", \"tá um sol danado\"",
-  "cuidado": "Reconhecer sem dramatizar: \"dá um susto mesmo\". Se abalado, diminuir o ritmo.",
+  "cuidado": "Reconhecer sem dramatizar: \"dá um susto mesmo\". Se ele disser que não está bem, diminuir o ritmo.",
   "indica": "Local ruim: antecipar o retorno. Nunca rebaixa a prioridade técnica.",
   "status": "rascunho"
  },

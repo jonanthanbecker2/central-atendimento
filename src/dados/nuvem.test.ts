@@ -102,11 +102,11 @@ describe('sincronização com o Supabase', async () => {
     // As duas mexem ao mesmo tempo: Bruno grava no banco, Ana ainda não enviou. Nada se perde.
     l.dados = { ...l.dados, respostas: { ...l.dados.respostas, 'FR-01': 'Sim' }, eventos: [...l.dados.eventos, { em: '2026-11-24T11:05:00Z', autor: 'Bruno', tipo: 'nota', detalhe: 'segunda' }] };
     l.atualizado_em = carimbo();
-    store.atualizar(p.id, { respostas: { ...store.lerBanco().protocolos[0].respostas, 'SEG-02': 'Bem' } }, { tipo: 'nota', detalhe: 'da Ana' });
+    store.atualizar(p.id, { respostas: { ...store.lerBanco().protocolos[0].respostas, 'SEG-02': 'Sim' } }, { tipo: 'nota', detalhe: 'da Ana' });
     await vi.advanceTimersByTimeAsync(2000);
     const final = tabelas.ca_protocolos[0].dados;
     expect(final.respostas['FR-01']).toBe('Sim');
-    expect(final.respostas['SEG-02']).toBe('Bem');
+    expect(final.respostas['SEG-02']).toBe('Sim');
     expect(final.eventos.map((e: { detalhe: string }) => e.detalhe)).toEqual(expect.arrayContaining(['segunda', 'da Ana']));
 
     // Planilha alterada vai para ca_cadastros

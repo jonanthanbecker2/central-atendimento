@@ -5,7 +5,7 @@ import type { Respostas } from '../types';
 
 const base: Respostas = {
   'SEG-01': 'Parado em local seguro',
-  'SEG-02': 'Bem',
+  'SEG-02': 'Sim',
   'SEG-03': 'Não',
   'SEG-04': 'Não',
   'SEG-05': 'Parcial',
