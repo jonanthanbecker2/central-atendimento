@@ -16,6 +16,7 @@ interface Banco {
   checklist: ChecklistAberto[];
   preventivas: Preventiva[];
   prestadores: Prestador[];
+  checklistApp?: ChecklistAberto[]; // itens em aberto do app de vistoria (online; lidos do banco, não da planilha)
   usuario?: Usuario;
   seq: number;
 }
@@ -56,6 +57,10 @@ export function useBanco(): Banco {
   return useSyncExternalStore((f) => { ouvintes.add(f); return () => ouvintes.delete(f); }, () => banco);
 }
 export const lerBanco = () => banco;
+
+/** Checklist em aberto da frota: o da planilha mais o que veio do app de vistoria (online). */
+export const checklistDaFrota = (b: Pick<Banco, 'checklist' | 'checklistApp'>, frota: string) =>
+  [...(b.checklistApp ?? []), ...b.checklist].filter((c) => c.frota === frota);
 
 export function definirUsuario(u: Usuario | undefined) { salvar({ ...banco, usuario: u }); }
 
@@ -183,7 +188,7 @@ export function registrarFotoVeiculo(id: string, momento: FotoVeiculo['momento']
     em: agora(), autor: autor(), momento, frota: p.frota, kmInformado: p.km,
     veiculo: banco.veiculos.find((v) => v.frota === p.frota),
     historico: banco.historico.filter((h) => h.frota === p.frota).sort((a, c) => c.data.localeCompare(a.data)).slice(0, 10),
-    checklist: banco.checklist.filter((c) => c.frota === p.frota),
+    checklist: checklistDaFrota(banco, p.frota),
     preventivasEmAberto: emAberto(banco.preventivas, p.frota).map((pv) => ({ ...pv, situacao: situacao(pv, km).rotulo })),
   };
   atualizar(id, { fotosVeiculo: [...(p.fotosVeiculo ?? []), foto] });

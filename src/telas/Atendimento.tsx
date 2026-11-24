@@ -3,7 +3,7 @@
 //    Cada fala sugerida aparece como mensagem; a resposta do motorista vira um balão e abre a próxima.
 // B. Histórico do veículo (esquerda, embaixo) · C. Orientação da IA + resultado das regras (lateral)
 import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { atualizar, lerBanco, mudarEstado, registrarFotoVeiculo, useBanco } from '../dados/store';
+import { atualizar, checklistDaFrota, lerBanco, mudarEstado, registrarFotoVeiculo, useBanco } from '../dados/store';
 import { falhaPorId, itens as todosItens, itensDaQueixa, queixaPorId, queixas, roteiro, saidasDaQueixa, temArvore } from '../conteudo';
 import { triar, type ResultadoTriagem } from '../motor/motor';
 import { EditorOS, osEmDia, resumoOrdens } from './OrdemServico';
@@ -551,7 +551,7 @@ function HistoricoVeiculo({ frota, km, veiculo }: { frota: string; km: string; v
   const h = b.historico.filter((x) => x.frota === frota).sort((a, c) => c.data.localeCompare(a.data));
   const rev = h.find((x) => x.tipo === 'revisao');
   const man = h.find((x) => x.tipo === 'manutencao');
-  const ck = b.checklist.filter((x) => x.frota === frota);
+  const ck = checklistDaFrota(b, frota);
   const kmAtual = kmReferencia(km, b.historico, frota);
   const pv = emAberto(b.preventivas, frota);
   return (
@@ -560,7 +560,7 @@ function HistoricoVeiculo({ frota, km, veiculo }: { frota: string; km: string; v
       <div className="tres">
         <div><h4>Última revisão</h4>{rev ? <p>{fmtDia(rev.data)} · {rev.km} km<br />{rev.descricao}<br /><span className="suave">{rev.prestador}</span></p> : <p className="suave">Sem registro</p>}</div>
         <div><h4>Última manutenção</h4>{man ? <p>{fmtDia(man.data)} · {man.km} km<br />{man.descricao}<br /><span className="suave">{man.prestador}</span></p> : <p className="suave">Sem registro</p>}</div>
-        <div><h4>Checklist em aberto ({ck.length})</h4>{ck.length ? <ul>{ck.map((c, i) => <li key={i}>{fmtDia(c.data)} · {c.item}: {c.resposta}</li>)}</ul> : <p className="suave">Nada em aberto</p>}</div>
+        <div><h4>Checklist em aberto ({ck.length})</h4>{ck.length ? <ul className="checklist-aberto">{ck.map((c, i) => <li key={i} className={c.acao && /NAO_UTILIZAR|ENCERRAR/.test(c.acao) ? 'vencida' : ''}>{fmtDia(c.data)} · {c.item}: {c.resposta}{c.detalhe && c.detalhe !== c.resposta ? ` (${c.detalhe})` : ''}{c.origem === 'app' && <span className="suave"> · app de vistoria · {c.situacao === 'programada' ? `programada${c.dataProgramada ? ` p/ ${fmtDia(c.dataProgramada)}` : ''}` : 'aguardando atendimento'}{c.acao ? ` · ${ROTULO_ACAO_APP[c.acao] ?? c.acao}` : ''}</span>}</li>)}</ul> : <p className="suave">Nada em aberto</p>}</div>
         <div><h4>Preventivas em aberto ({pv.length}){kmAtual ? <span className="suave"> · km {fmtKm(kmAtual)}</span> : null}</h4>
           {pv.length ? <ul className="preventivas">{pv.map((x) => { const st = situacao(x, kmAtual); return <li key={x.id} className={st.classe}>{x.tipo} · {fmtKm(x.kmPrevisto)} km · <b>{st.rotulo}</b></li>; })}</ul> : <p className="suave">Nada programado</p>}
         </div>
@@ -572,6 +572,13 @@ function HistoricoVeiculo({ frota, km, veiculo }: { frota: string; km: string; v
 // ---------------- IA: lê o ponto da conversa e orienta ----------------
 // Passos em que não há frase para o motorista: a IA só ajuda a decidir (queixa, nível).
 const SEM_FALA: Passo[] = ['queixa', 'nivel'];
+
+/** Ação indicada pelo app de vistoria, em palavras. */
+const ROTULO_ACAO_APP: Record<string, string> = {
+  ENCERRAR_MOTOR: 'vistoria encerrada (motor)', ENCERRAR_RISCO: 'vistoria encerrada (risco)',
+  NAO_UTILIZAR: 'não utilizar o veículo', DOC_NAO_UTILIZAR: 'documento: não utilizar',
+  CONTATO_CENTRAL: 'falar com a central', REPARO_CENTRAL: 'solicitar reparo',
+};
 
 /** Guarda no protocolo a orientação que o painel mostrou em cada bloco (só quando muda). */
 function guardarOrientacao(id: string, passo: Passo, momento: number, item: string | undefined, r: RespostaIA) {

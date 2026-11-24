@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { atualizar, novoProtocolo, useBanco } from '../dados/store';
+import { atualizar, checklistDaFrota, novoProtocolo, useBanco } from '../dados/store';
 import { queixaPorId } from '../conteudo';
 import { ESTADOS, Prio, fmtData, ir, ordemFila, retornoPendente } from '../ui';
 import type { Protocolo } from '../types';
@@ -17,7 +17,7 @@ export function Fila() {
     .sort((a, c) => a.r!.combinadoPara.localeCompare(c.r!.combinadoPara));
 
   const abrir = () => {
-    const checklist = origem === 'checklist' ? b.checklist.filter((c) => c.frota === frota) : [];
+    const checklist = origem === 'checklist' ? checklistDaFrota(b, frota) : [];
     const p = novoProtocolo({
       origem, frota, km,
       relato: origem === 'whatsapp' ? `Mensagem do WhatsApp: ${msg}` : checklist.length ? `Checklist: ${checklist.map((c) => `${c.item} = ${c.resposta}`).join('; ')}` : '',

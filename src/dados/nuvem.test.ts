@@ -44,7 +44,9 @@ function consulta(tabela: string) {
 vi.mock('@supabase/supabase-js', () => ({
   createClient: () => ({
     from: consulta,
-    rpc: async (nome: string) => (nome === 'ca_proximo_numero' ? { data: `CA-20261124-${String(++seq).padStart(4, '0')}`, error: null } : { data: [], error: null }),
+    rpc: async (nome: string) => (nome === 'ca_proximo_numero' ? { data: `CA-20261124-${String(++seq).padStart(4, '0')}`, error: null }
+      : nome === 'ca_checklist_aberto' ? { data: [{ vistoria_id: 'v1', frota: '412', data: '2026-11-24T08:10:00Z', km: 100000, item: 'Pneus', resposta: 'Não', acao: 'NAO_UTILIZAR', detalhe: 'careca', situacao: 'aguardando', data_programada: null }], error: null }
+      : { data: [], error: null }),
     auth: {
       signInWithPassword: async ({ password }: { password: string }) => { logado = password === 'certa'; return { error: logado ? null : { message: 'Invalid login credentials' } }; },
       getSession: async () => ({ data: { session: logado ? { access_token: 'tok' } : null } }),
@@ -74,6 +76,8 @@ describe('sincronização com o Supabase', async () => {
     expect(await nuvem.entrar('ana@x', 'errada')).toBe('E-mail ou senha incorretos.');
     expect(await nuvem.entrar('ana@x', 'certa')).toBeNull();
     expect(store.lerBanco().usuario).toEqual({ nome: 'Ana', perfil: 'N1', centro: undefined });
+    // Checklist em aberto do app de vistoria chega junto com o login
+    expect(store.checklistDaFrota(store.lerBanco(), '412')).toMatchObject([{ origem: 'app', item: 'Pneus', detalhe: 'careca', situacao: 'aguardando' }]);
 
     // Novo protocolo: número provisório, depois o do banco, e gravação inteira
     const p = store.novoProtocolo({ origem: 'telefone' });
@@ -119,6 +123,9 @@ describe('sincronização com o Supabase', async () => {
     store.registrarFotoVeiculo(p.id, 'direcionado');
     await vi.advanceTimersByTimeAsync(2000);
     expect(tabelas.ca_protocolos[0].dados.fotosVeiculo[0]).toMatchObject({ frota: '1234', momento: 'direcionado', autor: 'Ana' });
+    store.atualizar(p.id, { frota: '412' });
+    store.registrarFotoVeiculo(p.id, 'passado_adiante');
+    expect(store.lerBanco().protocolos[0].fotosVeiculo?.[1].checklist[0]).toMatchObject({ origem: 'app', item: 'Pneus' });
 
     // Sair apaga a cópia deste navegador
     await nuvem.sair();

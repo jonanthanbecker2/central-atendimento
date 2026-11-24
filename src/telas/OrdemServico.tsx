@@ -2,7 +2,7 @@
 // Vem preenchida com os dados da triagem; o atendente revisa os serviços a verificar, inclui novos
 // e gera o arquivo (página para imprimir ou salvar em PDF) e o texto para o WhatsApp.
 import { useState } from 'react';
-import { atualizar, useBanco } from '../dados/store';
+import { atualizar, checklistDaFrota, useBanco } from '../dados/store';
 import { falhaPorId, itens as todosItens, queixaPorId } from '../conteudo';
 import type { ResultadoTriagem } from '../motor/motor';
 import { fmtData, fmtDia } from '../ui';
@@ -15,7 +15,7 @@ const FORA_DA_OS = new Set(['SEG-02', 'COM-03', 'COM-04']);
 /** Item do checklist em aberto transformado em serviço a verificar. */
 export const servicoDoChecklist = (c: ChecklistAberto): ServicoOS => ({
   origem: 'checklist', checklist: `${c.data}|${c.item}`,
-  texto: `${c.item}: verificar (${c.resposta.toLowerCase()} no checklist de ${fmtDia(c.data)})`,
+  texto: `${c.item}: verificar (${(c.resposta || c.detalhe || 'não conforme').toLowerCase()} no ${c.origem === 'app' ? 'app de vistoria' : 'checklist'} de ${fmtDia(c.data)})`,
 });
 
 /** Preventiva programada transformada em serviço da OS preventiva. */
@@ -246,7 +246,7 @@ function CartaoOS({ p, res, veiculo, prestador, autor, r, todas, salvar, remover
   p: Protocolo; res: ResultadoTriagem; veiculo?: Veiculo; prestador?: Prestador; autor: string;
   r: RascunhoOS; todas: RascunhoOS[]; salvar: (m: Partial<RascunhoOS>) => void; remover: () => void;
 }) {
-  const checklist = useBanco().checklist.filter((c) => c.frota === p.frota);
+  const checklist = checklistDaFrota(useBanco(), p.frota);
   // Em qual OS da parada o item do checklist já está
   const ondeEsta = (c: ChecklistAberto) => todas.find((x) => x.servicos.some((s) => s.checklist === `${c.data}|${c.item}`));
   const [novo, setNovo] = useState('');

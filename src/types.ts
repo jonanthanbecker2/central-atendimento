@@ -110,6 +110,14 @@ export interface ChecklistAberto {
   data: string;
   item: string;
   resposta: string;
+  // Só nos itens que vêm do app de vistoria (site online):
+  origem?: 'planilha' | 'app';
+  vistoriaId?: string;
+  km?: number;
+  acao?: string;          // ação que o app indicou (ex.: NAO_UTILIZAR)
+  detalhe?: string;
+  situacao?: 'aguardando' | 'programada'; // aguardando atendimento no painel da vistoria, ou manutenção programada
+  dataProgramada?: string;
 }
 
 export interface Prestador {

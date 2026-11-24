@@ -89,6 +89,7 @@ async function carregarTudo() {
     .or(`estado.neq.encerrado,atualizado_em.gte.${desde}`).order('atualizado_em');
   if (error) { avisar({ erro: `Falha ao ler os protocolos: ${error.message}` }); return; }
   receberProtocolos(data ?? []);
+  await buscarChecklistApp();
 }
 
 function receberProtocolos(linhas: { id: string; dados: Protocolo; atualizado_em: string }[]) {
@@ -116,6 +117,23 @@ async function buscarCadastros() {
   if (Object.keys(parcial).length) aplicarDoBanco(parcial);
 }
 
+/** Checklist em aberto do app de vistoria (mesmo Supabase). Só leitura; falha aqui não para a central. */
+let avisouChecklist = false;
+async function buscarChecklistApp() {
+  const { data, error } = await supabase!.rpc('ca_checklist_aberto');
+  if (error) {
+    if (!avisouChecklist) console.warn('Checklist do app de vistoria indisponível:', error.message);
+    avisouChecklist = true;
+    return;
+  }
+  const lista = (data ?? []) as { vistoria_id: string; frota: string; data: string; km: number | null; item: string | null; resposta: string | null; acao: string | null; detalhe: string | null; situacao: 'aguardando' | 'programada'; data_programada: string | null }[];
+  aplicarDoBanco({ checklistApp: lista.map((l) => ({
+    origem: 'app' as const, frota: l.frota, data: l.data, item: l.item ?? 'item', resposta: l.resposta ?? '',
+    vistoriaId: l.vistoria_id, km: l.km ?? undefined, acao: l.acao ?? undefined, detalhe: l.detalhe ?? undefined,
+    situacao: l.situacao, dataProgramada: l.data_programada ?? undefined,
+  })) });
+}
+
 async function buscarMudancas() {
   const u = lerBanco().usuario;
   if (!u || u.perfil === 'centro') return;
@@ -124,6 +142,7 @@ async function buscarMudancas() {
   if (error) { avisar({ erro: `Sem conexão com o banco (${error.message}). As mudanças ficam guardadas e vão quando voltar.` }); return; }
   receberProtocolos(data ?? []);
   await buscarCadastros();
+  if (++voltas % 3 === 0) await buscarChecklistApp(); // a cada 30 s
   avisar({ erro: undefined, ultimaVez: new Date().toISOString() });
 }
 
@@ -221,6 +240,7 @@ export async function numerarProtocolo(id: string, aplicar: (numero: string) => 
 
 // ---------------- Ciclo ----------------
 const numerando = new Set<string>();
+let voltas = 0;
 let relogio: ReturnType<typeof setInterval> | null = null;
 function iniciarSincronizacao() {
   if (!supabase) return;
