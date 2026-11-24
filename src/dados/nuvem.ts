@@ -18,7 +18,7 @@ export const supabase: SupabaseClient | null = NUVEM ? createClient(URL_SUPABASE
 type NomeCadastro = 'veiculos' | 'historico' | 'checklist' | 'preventivas' | 'prestadores';
 
 // ---------------- Estado da sincronização (para o aviso no topo da tela) ----------------
-export type EstadoSync = { pendentes: number; erro?: string; ultimaVez?: string };
+export type EstadoSync = { pendentes: number; erro?: string; ultimaVez?: string; checklistApp?: string };
 let estado: EstadoSync = { pendentes: 0 };
 const ouvintes = new Set<() => void>();
 const avisar = (mud: Partial<EstadoSync>) => { estado = { ...estado, ...mud }; ouvintes.forEach((f) => f()); };
@@ -124,9 +124,14 @@ async function buscarChecklistApp() {
   if (error) {
     if (!avisouChecklist) console.warn('Checklist do app de vistoria indisponível:', error.message);
     avisouChecklist = true;
+    avisar({ checklistApp: /ca_checklist_aberto|function|schema cache/i.test(error.message)
+      ? 'não ligado: rode o script supabase/migrations/002_checklist_do_app.sql no SQL Editor do Supabase'
+      : `falha ao ler (${error.message})` });
     return;
   }
   const lista = (data ?? []) as { vistoria_id: string; frota: string; data: string; km: number | null; item: string | null; resposta: string | null; acao: string | null; detalhe: string | null; situacao: 'aguardando' | 'programada'; data_programada: string | null }[];
+  const frotas = new Set(lista.map((l) => l.frota)).size;
+  avisar({ checklistApp: lista.length ? `ligado: ${lista.length} itens em aberto em ${frotas} frota(s) (${[...new Set(lista.map((l) => l.frota))].slice(0, 8).join(', ')}${frotas > 8 ? '…' : ''})` : 'ligado: nenhum item em aberto no app de vistoria agora' });
   aplicarDoBanco({ checklistApp: lista.map((l) => ({
     origem: 'app' as const, frota: l.frota, data: l.data, item: l.item ?? 'item', resposta: l.resposta ?? '',
     vistoriaId: l.vistoria_id, km: l.km ?? undefined, acao: l.acao ?? undefined, detalhe: l.detalhe ?? undefined,

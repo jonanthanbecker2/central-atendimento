@@ -4,8 +4,8 @@ import { alterarPreventiva, apagarProtocolos, carregarExemplos, exportarBackup, 
 import { emAberto, fmtKm, kmReferencia, situacao } from '../dados/preventivas';
 import { fmtDia } from '../ui';
 import { IA_ONLINE, reconferirIA, statusIA, avisoIADesligada, type StatusIA } from '../ia/cliente';
-import { NUVEM } from '../dados/nuvem';
-import { useEffect } from 'react';
+import { NUVEM, assinarEstadoSync, lerEstadoSync } from '../dados/nuvem';
+import { useEffect, useSyncExternalStore } from 'react';
 import { catalogo, itens, saidas } from '../conteudo';
 
 const PLANILHAS = [
@@ -61,6 +61,7 @@ export function Dados() {
         </>}
       </div>
       <AcessoIA />
+      {NUVEM && <ChecklistApp />}
       <CadastroPreventivas />
       <h3>Conteúdo da triagem</h3>
       <p>{catalogo.length} falhas no catálogo · {itens.length} informações nas árvores · {saidas.length} saídas. Tudo em <b>rascunho</b> até a validação dos analistas (arquivos em <code>src/conteudo</code>).</p>
@@ -130,6 +131,12 @@ function CadastroPreventivas() {
       )}
     </>
   );
+}
+
+/** Situação da ligação com o app de vistoria (checklist em aberto). */
+function ChecklistApp() {
+  const st = useSyncExternalStore(assinarEstadoSync, lerEstadoSync);
+  return (<><h3>Checklist do app de vistoria</h3><p className={st.checklistApp?.startsWith('ligado') ? 'ok' : 'suave'}>{st.checklistApp ?? 'Conferindo…'}</p></>);
 }
 
 /** Situação da IA (no site online, a IA usa o login de cada pessoa; não há código para digitar). */

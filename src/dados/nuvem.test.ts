@@ -127,6 +127,20 @@ describe('sincronização com o Supabase', async () => {
     store.registrarFotoVeiculo(p.id, 'passado_adiante');
     expect(store.lerBanco().protocolos[0].fotosVeiculo?.[1].checklist[0]).toMatchObject({ origem: 'app', item: 'Pneus' });
 
+    // Várias planilhas de uma vez (botão de exemplos): todas chegam ao banco e continuam na tela
+    for (const t of ['veiculos', 'historico', 'checklist', 'preventivas', 'prestadores'] as const) {
+      const csv = t === 'checklist' ? 'frota;data;item;resposta\n412;2026-11-20;Palhetas;Desgastadas'
+        : t === 'veiculos' ? 'frota;placa;marca;modelo;classe;centro\n412;A;MB;Atego;Toco;LP'
+        : t === 'historico' ? 'frota;tipo;data;km;descricao;prestador\n412;revisao;2026-09-02;1;x;y'
+        : t === 'preventivas' ? 'frota;tipo_revisao;km_previsto\n412;Rev;180000'
+        : 'id;nome\np1;Oficina';
+      store.importarCsv(t, csv);
+    }
+    await vi.advanceTimersByTimeAsync(25000);
+    expect(tabelas.ca_cadastros.map((c) => c.tipo).sort()).toEqual(['checklist', 'historico', 'prestadores', 'preventivas', 'veiculos']);
+    expect(store.lerBanco().checklist).toHaveLength(1);
+    expect(store.checklistDaFrota(store.lerBanco(), '412').map((c) => c.item)).toEqual(['Pneus', 'Palhetas']);
+
     // Sair apaga a cópia deste navegador
     await nuvem.sair();
     expect(store.lerBanco().protocolos).toHaveLength(0);
