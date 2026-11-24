@@ -1,0 +1,86 @@
+[
+ {
+  "id": "freio",
+  "nome": "Freio",
+  "diz": "\"freio baixo\", \"puxando para um lado\"",
+  "piloto": true
+ },
+ {
+  "id": "luz_painel",
+  "nome": "Luz no painel",
+  "diz": "\"acendeu uma luz\"",
+  "piloto": true
+ },
+ {
+  "id": "superaquecimento",
+  "nome": "Superaquecimento",
+  "diz": "\"tá esquentando\", \"o ponteiro subiu\"",
+  "piloto": true
+ },
+ {
+  "id": "perda_forca",
+  "nome": "Perda de força",
+  "diz": "\"tá fraco\", \"não sobe\"",
+  "piloto": true
+ },
+ {
+  "id": "nao_liga",
+  "nome": "Não liga",
+  "diz": "\"não pega\", \"não dá partida\"",
+  "piloto": true
+ },
+ {
+  "id": "barulho",
+  "nome": "Barulho",
+  "diz": "\"tá batendo\", \"chiando\"",
+  "piloto": false
+ },
+ {
+  "id": "vazamento",
+  "nome": "Vazamento",
+  "diz": "\"tá pingando\"",
+  "piloto": false
+ },
+ {
+  "id": "cambio",
+  "nome": "Câmbio ou embreagem",
+  "diz": "\"não engata\", \"patinando\"",
+  "piloto": false
+ },
+ {
+  "id": "pneu",
+  "nome": "Pneu",
+  "diz": "\"furou\", \"estourou\"",
+  "piloto": false
+ },
+ {
+  "id": "eletrica",
+  "nome": "Elétrica e luzes",
+  "diz": "\"luz não acende\"",
+  "piloto": false
+ },
+ {
+  "id": "ar",
+  "nome": "Ar e vazamento de ar",
+  "diz": "\"chiado de ar\"",
+  "piloto": false
+ },
+ {
+  "id": "direcao",
+  "nome": "Direção",
+  "diz": "\"tá pesada\", \"puxando\"",
+  "piloto": false
+ },
+ {
+  "id": "bomba",
+  "nome": "Bomba de coleta e tanque",
+  "diz": "\"a bomba não puxa\"",
+  "piloto": false
+ },
+ {
+  "id": "outro",
+  "nome": "Outro",
+  "diz": "",
+  "piloto": false
+ }
+]

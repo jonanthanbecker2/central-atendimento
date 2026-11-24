@@ -1,0 +1,6 @@
+id;nome;cidade;uf;especialidades;marcas;tipo;atende_no_local;telefone;centros
+P1;Oficina Exemplo Freios;Lençóis Paulista;SP;Freios a ar|Suspensão;Todas;homologado;sim;(14) 0000-0001;Lençóis Paulista-SP
+P2;Oficina Exemplo Diesel;Lençóis Paulista;SP;Mecânica diesel|Mecânica diesel (motor)|Mecânica diesel (arrefecimento)|Injeção eletrônica diesel;Todas;homologado;sim;(14) 0000-0002;Lençóis Paulista-SP
+P3;Auto Elétrica Exemplo;Bauru;SP;Elétrica|Elétrica / freios|Elétrica / tacógrafo;Todas;homologado;sim;(14) 0000-0003;Lençóis Paulista-SP
+P4;Concessionária Exemplo VW;Osasco;SP;Mecânica diesel|Injeção eletrônica diesel|Freios a ar|Elétrica;Volkswagen;homologado;não;(11) 0000-0004;Osasco-SP
+P5;Socorro Exemplo 24h;Bauru;SP;Socorro;Todas;spot;sim;(14) 0000-0005;Lençóis Paulista-SP|Osasco-SP

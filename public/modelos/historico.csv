@@ -1,0 +1,5 @@
+frota;tipo;data;km;descricao;prestador
+412;revisao;2026-09-02;172000;Revisão de 20.000 km (óleo, filtros, regulagem de freio);Oficina Exemplo Freios
+412;manutencao;2026-11-12;179500;Troca de lonas e regulagem do freio traseiro;Oficina Exemplo Freios
+230;revisao;2026-08-15;98000;Revisão de 20.000 km;Concessionária Exemplo VW
+318;manutencao;2026-10-30;251000;Troca da mangueira do radiador;Oficina Exemplo Diesel

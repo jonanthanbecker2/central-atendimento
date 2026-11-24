@@ -1,0 +1,1004 @@
+[
+ {
+  "id": "S-01",
+  "queixa": "*",
+  "quando": "Chama (SEG-03)",
+  "condicao": {
+   "item": "SEG-03",
+   "in": [
+    "Chama"
+   ]
+  },
+  "falhas": [
+   "F-015"
+  ],
+  "prioridade": "P0",
+  "nivel": "N1",
+  "especialidade": "Socorro",
+  "local": true,
+  "orientacao": "Desligar o motor, afastar-se do veículo e não tentar apagar se não for seguro",
+  "fechamento": "Desligue o motor e se afaste do caminhão. Estou acionando o socorro agora e fico na linha com você.",
+  "status": "rascunho"
+ },
+ {
+  "id": "S-02",
+  "queixa": "*",
+  "quando": "Vazamento do tanque (SEG-04)",
+  "condicao": {
+   "item": "SEG-04",
+   "in": [
+    "Sim"
+   ]
+  },
+  "falhas": [
+   "F-014"
+  ],
+  "prioridade": "P0",
+  "nivel": "N1",
+  "especialidade": "Implemento (tanque e bomba)",
+  "local": true,
+  "orientacao": "Parar, conter o produto, sinalizar e acionar SST e Meio Ambiente",
+  "fechamento": "Para, desliga e afasta as pessoas. Vou acionar o fluxo de vazamento agora.",
+  "status": "rascunho"
+ },
+ {
+  "id": "FS-02",
+  "queixa": "freio",
+  "quando": "Fumaça ou cheiro forte na roda, ou freio que não solta",
+  "condicao": {
+   "any": [
+    {
+     "item": "SEG-03",
+     "in": [
+      "Fumaça ou cheiro forte"
+     ]
+    },
+    {
+     "item": "FR-12",
+     "in": [
+      "Não solta"
+     ]
+    }
+   ]
+  },
+  "falhas": [
+   "F-021"
+  ],
+  "prioridade": "P0",
+  "nivel": "N1",
+  "especialidade": "Freios a ar",
+  "local": true,
+  "orientacao": "Parar em local seguro, não seguir viagem e ficar longe da roda quente",
+  "fechamento": "Não siga com ele assim. Vou mandar um mecânico de freio até você e te ligo às [hora].",
+  "status": "rascunho"
+ },
+ {
+  "id": "FS-03",
+  "queixa": "freio",
+  "quando": "Luz vermelha de pressão ou ar que não sobe",
+  "condicao": {
+   "any": [
+    {
+     "item": "FR-09",
+     "in": [
+      "Vermelha"
+     ]
+    },
+    {
+     "item": "FR-10",
+     "in": [
+      "Não sobe"
+     ]
+    }
+   ]
+  },
+  "falhas": [
+   "F-004",
+   "F-005",
+   "F-017"
+  ],
+  "prioridade": "P0",
+  "nivel": "N1",
+  "especialidade": "Freios a ar",
+  "local": true,
+  "orientacao": "Não movimentar o veículo",
+  "fechamento": "Com o ar baixo o freio não funciona direito, então o caminhão fica parado. O mecânico vai até você e te ligo às [hora].",
+  "status": "rascunho"
+ },
+ {
+  "id": "FS-04",
+  "queixa": "freio",
+  "quando": "Freio aplica sozinho com o veículo andando",
+  "condicao": {
+   "item": "FR-12",
+   "in": [
+    "Freia sozinho andando"
+   ]
+  },
+  "falhas": [
+   "F-026"
+  ],
+  "prioridade": "P0",
+  "nivel": "N2",
+  "especialidade": "Freios a ar",
+  "local": true,
+  "orientacao": "Parar em local seguro e sinalizar",
+  "fechamento": "Pare onde for seguro e ligue o pisca-alerta. Vou passar seu caso ao analista e te retorno às [hora].",
+  "status": "rascunho"
+ },
+ {
+  "id": "FS-05",
+  "queixa": "freio",
+  "quando": "Freio fraco: demora para parar ou pedal mais fundo",
+  "condicao": {
+   "item": "FR-12",
+   "in": [
+    "Fraco, demora para parar"
+   ]
+  },
+  "falhas": [
+   "F-071",
+   "F-023"
+  ],
+  "prioridade": "P0",
+  "nivel": "N2",
+  "especialidade": "Freios a ar",
+  "local": false,
+  "orientacao": "Reduzir a velocidade, não carregar e ir ao prestador mais próximo; se piorar, parar",
+  "fechamento": "Siga devagar e com distância até [prestador], sem carregar. Se o pedal piorar, pare e me ligue.",
+  "status": "rascunho"
+ },
+ {
+  "id": "FS-06",
+  "queixa": "freio",
+  "quando": "Freio de estacionamento não segura",
+  "condicao": {
+   "item": "FR-13",
+   "in": [
+    "Não segura"
+   ]
+  },
+  "falhas": [
+   "F-025"
+  ],
+  "prioridade": "P0",
+  "nivel": "N1",
+  "especialidade": "Freios a ar",
+  "local": false,
+  "orientacao": "Calçar as rodas e não estacionar em rampa",
+  "fechamento": "Calce as rodas agora e não pare em rampa. O mecânico vai olhar o freio de mão e te ligo às [hora].",
+  "status": "rascunho"
+ },
+ {
+  "id": "FS-07",
+  "queixa": "freio",
+  "quando": "Pressão cai a cada pisada, sem luz vermelha",
+  "condicao": {
+   "all": [
+    {
+     "item": "FR-10",
+     "in": [
+      "Cai a cada pisada"
+     ]
+    },
+    {
+     "not": {
+      "item": "FR-09",
+      "in": [
+       "Vermelha"
+      ]
+     }
+    }
+   ]
+  },
+  "falhas": [
+   "F-023"
+  ],
+  "prioridade": "P1",
+  "nivel": "N2",
+  "especialidade": "Freios a ar",
+  "local": false,
+  "orientacao": "Parar se a luz vermelha acender; senão, ir direto ao prestador",
+  "fechamento": "Pode ir direto até [prestador], olhando o ponteiro do ar. Se a luz vermelha acender, pare e me ligue.",
+  "status": "rascunho"
+ },
+ {
+  "id": "FS-08",
+  "queixa": "freio",
+  "quando": "Pressão demora para subir, mas chega ao normal",
+  "condicao": {
+   "item": "FR-10",
+   "in": [
+    "Demora muito",
+    "Baixa, mas sobe"
+   ]
+  },
+  "falhas": [
+   "F-016"
+  ],
+  "prioridade": "P1",
+  "nivel": "N1",
+  "especialidade": "Freios a ar",
+  "local": false,
+  "orientacao": "Só sair com a pressão no normal e a luz apagada",
+  "fechamento": "Espere o ar chegar no normal antes de sair. Vou agendar a revisão em [prestador] e te passo o horário.",
+  "status": "rascunho"
+ },
+ {
+  "id": "FS-09",
+  "queixa": "freio",
+  "quando": "Puxa para um lado ao frear",
+  "condicao": {
+   "item": "FR-12",
+   "in": [
+    "Puxa para um lado"
+   ]
+  },
+  "falhas": [
+   "F-020"
+  ],
+  "prioridade": "P1",
+  "nivel": "N2",
+  "especialidade": "Freios a ar",
+  "local": false,
+  "orientacao": "Reduzir a velocidade e ir ao prestador mais próximo com cautela",
+  "fechamento": "Siga devagar até [prestador], freando com antecedência. Te ligo para confirmar o atendimento.",
+  "status": "rascunho"
+ },
+ {
+  "id": "FS-10",
+  "queixa": "freio",
+  "quando": "Freio duro, volta devagar ou pega de repente",
+  "condicao": {
+   "item": "FR-12",
+   "in": [
+    "Duro ou pega de repente"
+   ]
+  },
+  "falhas": [
+   "F-022"
+  ],
+  "prioridade": "P1",
+  "nivel": "N2",
+  "especialidade": "Freios a ar",
+  "local": false,
+  "orientacao": "Reduzir a velocidade, manter distância e ir ao prestador mais próximo",
+  "fechamento": "Mantenha distância do carro da frente e vá até [prestador]. Se piorar, pare e me ligue.",
+  "status": "rascunho"
+ },
+ {
+  "id": "FS-11",
+  "queixa": "freio",
+  "quando": "Freio de estacionamento não solta, com ar normal",
+  "condicao": {
+   "all": [
+    {
+     "item": "FR-13",
+     "in": [
+      "Não solta"
+     ]
+    },
+    {
+     "item": "FR-10",
+     "in": [
+      "Normal"
+     ]
+    }
+   ]
+  },
+  "falhas": [
+   "F-024"
+  ],
+  "prioridade": "P1",
+  "nivel": "N2",
+  "especialidade": "Freios a ar",
+  "local": true,
+  "orientacao": "Não forçar a saída e aguardar orientação",
+  "fechamento": "Não force a saída. Vou ver com o analista e o mecânico vai até você. Te ligo às [hora].",
+  "status": "rascunho"
+ },
+ {
+  "id": "FS-12",
+  "queixa": "freio",
+  "quando": "Luz amarela do ABS com o freio normal",
+  "condicao": {
+   "all": [
+    {
+     "item": "FR-09",
+     "in": [
+      "Amarela ou laranja"
+     ]
+    },
+    {
+     "item": "FR-12",
+     "in": [
+      "Normal"
+     ]
+    }
+   ]
+  },
+  "falhas": [
+   "F-006"
+  ],
+  "prioridade": "P1",
+  "nivel": "N1",
+  "especialidade": "Elétrica / freios",
+  "local": false,
+  "orientacao": "Seguir com cautela até o prestador; o freio funciona sem o ABS",
+  "fechamento": "O freio continua funcionando, só sem o ABS. Siga com cuidado e eu agendo em [prestador].",
+  "status": "rascunho"
+ },
+ {
+  "id": "LS-01",
+  "queixa": "luz_painel",
+  "quando": "Luz de pressão do óleo",
+  "condicao": {
+   "item": "LP-03",
+   "in": [
+    "Pressão do óleo"
+   ]
+  },
+  "falhas": [
+   "F-001"
+  ],
+  "prioridade": "P0",
+  "nivel": "N1",
+  "especialidade": "Mecânica diesel (motor)",
+  "local": true,
+  "orientacao": "Estacionar em local seguro, desligar o motor e não religar até orientação",
+  "fechamento": "Desligue o motor e não ligue de novo. Vou mandar o mecânico até você e te ligo às [hora].",
+  "status": "rascunho"
+ },
+ {
+  "id": "LS-02",
+  "queixa": "luz_painel",
+  "quando": "Luz de temperatura",
+  "condicao": {
+   "item": "LP-03",
+   "in": [
+    "Temperatura"
+   ]
+  },
+  "falhas": [
+   "F-002"
+  ],
+  "prioridade": "P0",
+  "nivel": "N1",
+  "especialidade": "Mecânica diesel (arrefecimento)",
+  "local": true,
+  "orientacao": "Estacionar, desligar o motor e não abrir o reservatório quente",
+  "fechamento": "Encoste e desligue o motor, sem abrir a tampa da água. O mecânico vai até você.",
+  "status": "rascunho"
+ },
+ {
+  "id": "LS-03",
+  "queixa": "luz_painel",
+  "quando": "Luz de ar ou freio",
+  "condicao": {
+   "item": "LP-03",
+   "in": [
+    "Ar ou freio"
+   ]
+  },
+  "falhas": [
+   "F-004",
+   "F-005"
+  ],
+  "prioridade": "P0",
+  "nivel": "N1",
+  "especialidade": "Freios a ar",
+  "local": true,
+  "orientacao": "Não movimentar o veículo",
+  "fechamento": "Com o ar baixo o caminhão fica parado. O mecânico vai até você.",
+  "status": "rascunho"
+ },
+ {
+  "id": "LS-04",
+  "queixa": "luz_painel",
+  "quando": "Cabine destravada",
+  "condicao": {
+   "item": "LP-03",
+   "in": [
+    "Cabine destravada"
+   ]
+  },
+  "falhas": [
+   "F-011"
+  ],
+  "prioridade": "P0",
+  "nivel": "N1",
+  "especialidade": "Mecânica geral / elétrica",
+  "local": false,
+  "orientacao": "Não rodar; travar a cabine e confirmar que a mensagem apagou",
+  "fechamento": "Não rode assim. Trave a cabine e me diga se a mensagem apagou.",
+  "status": "rascunho"
+ },
+ {
+  "id": "LS-05",
+  "queixa": "luz_painel",
+  "quando": "Bateria ou carga",
+  "condicao": {
+   "item": "LP-03",
+   "in": [
+    "Bateria ou carga"
+   ]
+  },
+  "falhas": [
+   "F-009"
+  ],
+  "prioridade": "P1",
+  "nivel": "N1",
+  "especialidade": "Elétrica",
+  "local": false,
+  "orientacao": "Desligar o que não for essencial e ir direto ao prestador",
+  "fechamento": "Desliga o que não precisar e vai direto até [prestador]. Se o painel apagar, encosta e me liga.",
+  "status": "rascunho"
+ },
+ {
+  "id": "LS-06",
+  "queixa": "luz_painel",
+  "quando": "Injeção ou motor",
+  "condicao": {
+   "item": "LP-03",
+   "in": [
+    "Injeção ou motor"
+   ]
+  },
+  "falhas": [
+   "F-007",
+   "F-076"
+  ],
+  "prioridade": "P1",
+  "nivel": "N2",
+  "especialidade": "Injeção eletrônica diesel",
+  "local": false,
+  "orientacao": "Estacionar em local seguro e aguardar orientação",
+  "fechamento": "Encoste em local seguro. Vou ver com o analista e te retorno às [hora].",
+  "status": "rascunho"
+ },
+ {
+  "id": "LS-07",
+  "queixa": "luz_painel",
+  "quando": "Filtro de partículas piscando",
+  "condicao": {
+   "all": [
+    {
+     "item": "LP-03",
+     "in": [
+      "Filtro de partículas"
+     ]
+    },
+    {
+     "item": "LP-02",
+     "in": [
+      "Piscando"
+     ]
+    }
+   ]
+  },
+  "falhas": [
+   "F-064"
+  ],
+  "prioridade": "P1",
+  "nivel": "N1",
+  "especialidade": "Injeção eletrônica / pós-tratamento",
+  "local": false,
+  "orientacao": "Piscando devagar: regeneração manual ao parar. Piscando rápido: parar em local seguro e regenerar",
+  "fechamento": "Vamos fazer a regeneração com o caminhão parado. Te explico o passo a passo.",
+  "status": "rascunho"
+ },
+ {
+  "id": "LS-08",
+  "queixa": "luz_painel",
+  "quando": "Emissões ou ARLA",
+  "condicao": {
+   "item": "LP-03",
+   "in": [
+    "Emissões ou ARLA"
+   ]
+  },
+  "falhas": [
+   "F-008"
+  ],
+  "prioridade": "P1",
+  "nivel": "N1",
+  "especialidade": "Injeção eletrônica / pós-tratamento",
+  "local": false,
+  "orientacao": "Abastecer só com ARLA 32; se a luz continuar, ir ao prestador com cautela",
+  "fechamento": "Abastece só com ARLA 32. Se a luz continuar, vai com calma até [prestador].",
+  "status": "rascunho"
+ },
+ {
+  "id": "LS-09",
+  "queixa": "luz_painel",
+  "quando": "Filtro de ar",
+  "condicao": {
+   "item": "LP-03",
+   "in": [
+    "Filtro de ar"
+   ]
+  },
+  "falhas": [
+   "F-010"
+  ],
+  "prioridade": "P2",
+  "nivel": "N1",
+  "especialidade": "Mecânica diesel",
+  "local": false,
+  "orientacao": "Seguir com cautela e programar a troca do filtro",
+  "fechamento": "Pode seguir. Vou agendar a troca do filtro.",
+  "status": "rascunho"
+ },
+ {
+  "id": "LS-10",
+  "queixa": "luz_painel",
+  "quando": "Tacógrafo",
+  "condicao": {
+   "item": "LP-03",
+   "in": [
+    "Tacógrafo"
+   ]
+  },
+  "falhas": [
+   "F-013"
+  ],
+  "prioridade": "P1",
+  "nivel": "N1",
+  "especialidade": "Elétrica / tacógrafo",
+  "local": false,
+  "orientacao": "Seguir com cautela até o prestador",
+  "fechamento": "Pode seguir com cuidado. Vou agendar em [prestador].",
+  "status": "rascunho"
+ },
+ {
+  "id": "LS-11",
+  "queixa": "luz_painel",
+  "quando": "ABS",
+  "condicao": {
+   "item": "LP-03",
+   "in": [
+    "ABS"
+   ]
+  },
+  "falhas": [
+   "F-006"
+  ],
+  "prioridade": "P1",
+  "nivel": "N1",
+  "especialidade": "Elétrica / freios",
+  "local": false,
+  "orientacao": "Seguir com cautela; o freio funciona sem o ABS",
+  "fechamento": "O freio continua funcionando, só sem o ABS. Eu agendo em [prestador].",
+  "status": "rascunho"
+ },
+ {
+  "id": "LS-12",
+  "queixa": "luz_painel",
+  "quando": "Luz vermelha não identificada",
+  "condicao": {
+   "all": [
+    {
+     "item": "LP-01",
+     "in": [
+      "Vermelha"
+     ]
+    },
+    {
+     "item": "LP-03",
+     "in": [
+      "Outra ou não sei"
+     ]
+    }
+   ]
+  },
+  "falhas": [],
+  "prioridade": "P0",
+  "nivel": "N2",
+  "especialidade": "Definida pelo analista",
+  "local": true,
+  "orientacao": "Estacionar em local seguro e aguardar orientação",
+  "fechamento": "Luz vermelha pede parada. Encoste e me manda uma foto do painel; o analista vai te orientar.",
+  "status": "rascunho"
+ },
+ {
+  "id": "LS-13",
+  "queixa": "luz_painel",
+  "quando": "Luz amarela não identificada",
+  "condicao": {
+   "all": [
+    {
+     "item": "LP-01",
+     "in": [
+      "Amarela ou laranja"
+     ]
+    },
+    {
+     "item": "LP-03",
+     "in": [
+      "Outra ou não sei"
+     ]
+    }
+   ]
+  },
+  "falhas": [],
+  "prioridade": "P1",
+  "nivel": "N2",
+  "especialidade": "Definida pelo analista",
+  "local": false,
+  "orientacao": "Seguir com cautela e mandar foto do painel",
+  "fechamento": "Me manda uma foto do painel. O analista vê e eu te retorno às [hora].",
+  "status": "rascunho"
+ },
+ {
+  "id": "SS-01",
+  "queixa": "superaquecimento",
+  "quando": "Óleo na água ou água no óleo",
+  "condicao": {
+   "item": "SA-04",
+   "in": [
+    "Sim"
+   ]
+  },
+  "falhas": [
+   "F-063",
+   "F-050"
+  ],
+  "prioridade": "P0",
+  "nivel": "N2",
+  "especialidade": "Mecânica diesel",
+  "local": true,
+  "orientacao": "Parar, desligar o motor e não religar até orientação",
+  "fechamento": "Não ligue mais o motor. Vou passar ao analista e mandar o mecânico. Te ligo às [hora].",
+  "status": "rascunho"
+ },
+ {
+  "id": "SS-02",
+  "queixa": "superaquecimento",
+  "quando": "Ponteiro alto, luz vermelha ou correia fora",
+  "condicao": {
+   "any": [
+    {
+     "item": "SA-01",
+     "in": [
+      "Ponteiro alto ou luz vermelha"
+     ]
+    },
+    {
+     "item": "SA-05",
+     "in": [
+      "Não"
+     ]
+    }
+   ]
+  },
+  "falhas": [
+   "F-002"
+  ],
+  "prioridade": "P0",
+  "nivel": "N1",
+  "especialidade": "Mecânica diesel (arrefecimento)",
+  "local": true,
+  "orientacao": "Estacionar, desligar o motor e não abrir o reservatório quente",
+  "fechamento": "Encoste e desligue o motor, sem abrir a tampa da água. O mecânico vai até você.",
+  "status": "rascunho"
+ },
+ {
+  "id": "SS-03",
+  "queixa": "superaquecimento",
+  "quando": "Fumaça branca contínua",
+  "condicao": {
+   "item": "SA-03",
+   "in": [
+    "Sim"
+   ]
+  },
+  "falhas": [
+   "F-045"
+  ],
+  "prioridade": "P1",
+  "nivel": "N2",
+  "especialidade": "Mecânica diesel",
+  "local": false,
+  "orientacao": "Se o nível de água estiver baixando junto, parar e desligar o motor",
+  "fechamento": "Fica de olho na água. Se estiver baixando, encosta e desliga. Vou ver com o analista.",
+  "status": "rascunho"
+ },
+ {
+  "id": "SS-04",
+  "queixa": "superaquecimento",
+  "quando": "Mensagem amarela de nível baixo",
+  "condicao": {
+   "item": "SA-01",
+   "in": [
+    "Mensagem amarela de nível baixo"
+   ]
+  },
+  "falhas": [
+   "F-003"
+  ],
+  "prioridade": "P1",
+  "nivel": "N1",
+  "especialidade": "Mecânica diesel (arrefecimento)",
+  "local": false,
+  "orientacao": "Seguir com cautela olhando o ponteiro; se subir, parar",
+  "fechamento": "Pode ir com calma até [prestador], olhando o ponteiro. Se passar do meio, encosta e me liga.",
+  "status": "rascunho"
+ },
+ {
+  "id": "PS-01",
+  "queixa": "perda_forca",
+  "quando": "Motor apagou e não liga",
+  "condicao": {
+   "item": "PF-06",
+   "in": [
+    "Apagou e não liga"
+   ]
+  },
+  "falhas": [
+   "F-065",
+   "F-047"
+  ],
+  "prioridade": "P1",
+  "nivel": "N2",
+  "especialidade": "Mecânica diesel / injeção",
+  "local": true,
+  "orientacao": "Não insistir na partida; aguardar orientação",
+  "fechamento": "Não insista na partida. Vou ver com o analista e mandar o mecânico. Te ligo às [hora].",
+  "status": "rascunho"
+ },
+ {
+  "id": "PS-02",
+  "queixa": "perda_forca",
+  "quando": "Luz vermelha",
+  "condicao": {
+   "item": "PF-01",
+   "in": [
+    "Vermelha"
+   ]
+  },
+  "falhas": [
+   "F-007"
+  ],
+  "prioridade": "P1",
+  "nivel": "N2",
+  "especialidade": "Injeção eletrônica diesel",
+  "local": false,
+  "orientacao": "Estacionar em local seguro e aguardar orientação",
+  "fechamento": "Encoste em local seguro. Vou ver com o analista e te retorno às [hora].",
+  "status": "rascunho"
+ },
+ {
+  "id": "PS-03",
+  "queixa": "perda_forca",
+  "quando": "Assobio ou sirene do turbo",
+  "condicao": {
+   "item": "PF-03",
+   "in": [
+    "Assobio ou sirene"
+   ]
+  },
+  "falhas": [
+   "F-077"
+  ],
+  "prioridade": "P1",
+  "nivel": "N2",
+  "especialidade": "Mecânica diesel (turbo)",
+  "local": true,
+  "orientacao": "Não seguir rodando com o turbo fazendo barulho anormal; aguardar orientação",
+  "fechamento": "Não siga com esse barulho, pode quebrar o motor. Vou ver com o analista.",
+  "status": "rascunho"
+ },
+ {
+  "id": "PS-04",
+  "queixa": "perda_forca",
+  "quando": "Motor falhando ou diesel de posto diferente",
+  "condicao": {
+   "any": [
+    {
+     "item": "PF-03",
+     "in": [
+      "Falhando ou engasgando"
+     ]
+    },
+    {
+     "item": "PF-05",
+     "in": [
+      "Sim"
+     ]
+    }
+   ]
+  },
+  "falhas": [
+   "F-076",
+   "F-065"
+  ],
+  "prioridade": "P1",
+  "nivel": "N1",
+  "especialidade": "Injeção eletrônica diesel",
+  "local": false,
+  "orientacao": "Seguir com cautela até o prestador; se o motor apagar, aguardar orientação",
+  "fechamento": "Vai com calma até [prestador]. Se apagar, encosta e me liga.",
+  "status": "rascunho"
+ },
+ {
+  "id": "PS-05",
+  "queixa": "perda_forca",
+  "quando": "ARLA baixo ou vazio",
+  "condicao": {
+   "item": "PF-04",
+   "in": [
+    "Baixo ou vazio"
+   ]
+  },
+  "falhas": [
+   "F-008"
+  ],
+  "prioridade": "P2",
+  "nivel": "N1",
+  "especialidade": "Injeção eletrônica / pós-tratamento",
+  "local": false,
+  "orientacao": "Abastecer só com ARLA 32",
+  "fechamento": "Abastece só com ARLA 32. Se continuar fraco, me liga.",
+  "status": "rascunho"
+ },
+ {
+  "id": "PS-06",
+  "queixa": "perda_forca",
+  "quando": "Fumaça preta",
+  "condicao": {
+   "item": "PF-02",
+   "in": [
+    "Preta"
+   ]
+  },
+  "falhas": [
+   "F-043"
+  ],
+  "prioridade": "P2",
+  "nivel": "N1",
+  "especialidade": "Mecânica diesel",
+  "local": false,
+  "orientacao": "Seguir com cautela até o prestador",
+  "fechamento": "Pode seguir com calma. Vou agendar em [prestador].",
+  "status": "rascunho"
+ },
+ {
+  "id": "PS-07",
+  "queixa": "perda_forca",
+  "quando": "Fumaça azul",
+  "condicao": {
+   "item": "PF-02",
+   "in": [
+    "Azul"
+   ]
+  },
+  "falhas": [
+   "F-044",
+   "F-077"
+  ],
+  "prioridade": "P2",
+  "nivel": "N1",
+  "especialidade": "Mecânica diesel",
+  "local": false,
+  "orientacao": "Verificar o nível de óleo e ir ao prestador",
+  "fechamento": "Dá uma olhada no óleo e vai até [prestador].",
+  "status": "rascunho"
+ },
+ {
+  "id": "NS-01",
+  "queixa": "nao_liga",
+  "quando": "Chave geral desligada",
+  "condicao": {
+   "item": "NL-02",
+   "in": [
+    "Não"
+   ]
+  },
+  "falhas": [
+   "F-049"
+  ],
+  "prioridade": "P2",
+  "nivel": "N1",
+  "especialidade": "Elétrica",
+  "local": false,
+  "orientacao": "Ligar a chave geral e tentar de novo",
+  "fechamento": "Liga a chave geral e tenta de novo, e me fala o que aconteceu.",
+  "status": "rascunho"
+ },
+ {
+  "id": "NS-02",
+  "queixa": "nao_liga",
+  "quando": "Nada acontece, nem o painel",
+  "condicao": {
+   "item": "NL-01",
+   "in": [
+    "Nada, nem o painel"
+   ]
+  },
+  "falhas": [
+   "F-066"
+  ],
+  "prioridade": "P1",
+  "nivel": "N1",
+  "especialidade": "Elétrica",
+  "local": true,
+  "orientacao": "Desligar os equipamentos; aguardar socorro ou carga",
+  "fechamento": "Desliga tudo. Vou mandar o socorro para dar carga. Te ligo às [hora].",
+  "status": "rascunho"
+ },
+ {
+  "id": "NS-03",
+  "queixa": "nao_liga",
+  "quando": "Só faz clique",
+  "condicao": {
+   "item": "NL-01",
+   "in": [
+    "Painel acende, só faz clique"
+   ]
+  },
+  "falhas": [
+   "F-049",
+   "F-048"
+  ],
+  "prioridade": "P1",
+  "nivel": "N1",
+  "especialidade": "Elétrica",
+  "local": true,
+  "orientacao": "Conferir câmbio em neutro; aguardar orientação",
+  "fechamento": "Confere se o câmbio está em neutro. Vou mandar o eletricista até você.",
+  "status": "rascunho"
+ },
+ {
+  "id": "NS-04",
+  "queixa": "nao_liga",
+  "quando": "Gira devagar",
+  "condicao": {
+   "item": "NL-01",
+   "in": [
+    "Gira devagar"
+   ]
+  },
+  "falhas": [
+   "F-048",
+   "F-066"
+  ],
+  "prioridade": "P1",
+  "nivel": "N1",
+  "especialidade": "Elétrica",
+  "local": true,
+  "orientacao": "Não insistir na partida; aguardar orientação",
+  "fechamento": "Não insista. Vou mandar o socorro elétrico até você.",
+  "status": "rascunho"
+ },
+ {
+  "id": "NS-05",
+  "queixa": "nao_liga",
+  "quando": "Gira normal e não pega, ou combustível pode ter acabado",
+  "condicao": {
+   "any": [
+    {
+     "item": "NL-01",
+     "in": [
+      "Gira normal e não pega"
+     ]
+    },
+    {
+     "item": "NL-03",
+     "in": [
+      "Pode ter acabado"
+     ]
+    }
+   ]
+  },
+  "falhas": [
+   "F-047"
+  ],
+  "prioridade": "P1",
+  "nivel": "N1",
+  "especialidade": "Mecânica diesel / injeção",
+  "local": true,
+  "orientacao": "Não insistir na partida por mais de 30 segundos seguidos",
+  "fechamento": "Não insiste mais na partida. Vou mandar o mecânico até você.",
+  "status": "rascunho"
+ }
+]

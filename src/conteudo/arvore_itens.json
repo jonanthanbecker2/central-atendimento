@@ -1,0 +1,790 @@
+[
+ {
+  "id": "SEG-01",
+  "queixa": "*",
+  "momento": 3,
+  "info": "Se está parado e em local seguro",
+  "tipo": "opcao",
+  "opcoes": [
+   "Parado em local seguro",
+   "Parado em local de risco"
+  ],
+  "obrigatoria": "trava",
+  "perguntas": [
+   "Você já está parado num lugar seguro, fora da pista?",
+   "Onde você conseguiu parar?"
+  ],
+  "frases": "\"tô no acostamento\", \"parei no posto\", \"parei na beira da estrada\"",
+  "cuidado": "Tom de preocupação, não de conferência. A ligação só acontece com o caminhão parado (dirigir falando ao telefone é infração). Se perceber que ele está dirigindo, peça com calma para desligar e ligar de novo quando estiver parado em lugar seguro.",
+  "indica": "Local de risco: pisca-alerta e triângulo antes de seguir a conversa.",
+  "status": "rascunho"
+ },
+ {
+  "id": "SEG-02",
+  "queixa": "*",
+  "momento": 3,
+  "info": "Como o motorista está e se tem condição de esperar",
+  "tipo": "opcao",
+  "opcoes": [
+   "Bem",
+   "Abalado",
+   "Local ruim para esperar"
+  ],
+  "obrigatoria": "sim",
+  "perguntas": [
+   "E você, está bem?",
+   "Tem onde esperar com tranquilidade?"
+  ],
+  "frases": "\"tomei um susto\", \"tô sozinho no escuro\", \"tá um sol danado\"",
+  "cuidado": "Reconhecer sem dramatizar: \"dá um susto mesmo\". Se abalado, diminuir o ritmo.",
+  "indica": "Local ruim: antecipar o retorno. Nunca rebaixa a prioridade técnica.",
+  "status": "rascunho"
+ },
+ {
+  "id": "SEG-03",
+  "queixa": "*",
+  "momento": 3,
+  "info": "Fumaça, cheiro de queimado ou fogo",
+  "tipo": "opcao",
+  "opcoes": [
+   "Chama",
+   "Fumaça ou cheiro forte",
+   "Não"
+  ],
+  "obrigatoria": "nao",
+  "perguntas": [
+   "Está saindo fumaça ou cheiro de queimado de algum lugar?"
+  ],
+  "frases": "\"cheiro de lona\", \"tá fumaçando\", \"pegando fogo\"",
+  "cuidado": "Fora da conversa da central: não é perguntado nem marcado. Se houver, aparece no relato do motorista.",
+  "indica": "Chama: S-01, P0.",
+  "status": "rascunho",
+  "naConversa": false
+ },
+ {
+  "id": "SEG-04",
+  "queixa": "*",
+  "momento": 3,
+  "info": "Produto vazando do tanque",
+  "tipo": "opcao",
+  "opcoes": [
+   "Sim",
+   "Não"
+  ],
+  "obrigatoria": "nao",
+  "perguntas": [
+   "Está vazando algum óleo do tanque?"
+  ],
+  "frases": "\"tá pingando óleo do tanque\", \"vazou na mangueira\"",
+  "cuidado": "Fora da conversa da central: não é perguntado nem marcado. Se houver, aparece no relato do motorista.",
+  "indica": "Sim: S-02, P0, fluxo de vazamento (SST e Meio Ambiente).",
+  "status": "rascunho",
+  "naConversa": false
+ },
+ {
+  "id": "SEG-05",
+  "queixa": "*",
+  "momento": 4,
+  "info": "Carregado ou vazio",
+  "tipo": "opcao",
+  "opcoes": [
+   "Cheio",
+   "Parcial",
+   "Vazio"
+  ],
+  "obrigatoria": "sim",
+  "perguntas": [
+   "Está carregado ou vazio?",
+   "Já tinha coletado hoje?"
+  ],
+  "frases": "\"tô cheio\", \"voltando pra base\", \"meio tanque\"",
+  "cuidado": "",
+  "indica": "Carregado muda a orientação (distância de frenagem, peso).",
+  "status": "rascunho"
+ },
+ {
+  "id": "COM-01",
+  "queixa": "*",
+  "momento": 5,
+  "info": "Opinião do motorista sobre a causa",
+  "tipo": "texto",
+  "opcoes": [],
+  "obrigatoria": "sim",
+  "perguntas": [
+   "Você conhece esse caminhão: o que acha que pode ser?"
+  ],
+  "frases": "\"pra mim é a lona\", \"não faço ideia\"",
+  "cuidado": "Valorizar o palpite. Não corrigir nem discutir.",
+  "indica": "Vai registrado para o prestador e para o catálogo.",
+  "status": "rascunho"
+ },
+ {
+  "id": "COM-02",
+  "queixa": "*",
+  "momento": 4,
+  "info": "Se já aconteceu antes",
+  "tipo": "opcao",
+  "opcoes": [
+   "Primeira vez",
+   "Já aconteceu",
+   "Não sei"
+  ],
+  "obrigatoria": "nao",
+  "perguntas": [
+   "Já tinha acontecido outras vezes?"
+  ],
+  "frases": "\"é a segunda vez essa semana\"",
+  "cuidado": "Se repetido, reconhecer o incômodo.",
+  "indica": "Repetido: leva ao N2 (olhar a causa, não só o sintoma).",
+  "status": "rascunho"
+ },
+ {
+  "id": "COM-03",
+  "queixa": "*",
+  "momento": 5,
+  "info": "Resumo confirmado pelo motorista",
+  "tipo": "opcao",
+  "opcoes": [
+   "Confirmou",
+   "Corrigiu"
+  ],
+  "obrigatoria": "sim",
+  "perguntas": [
+   "Deixa eu ver se entendi: [resumo com as palavras dele]. É isso?"
+  ],
+  "frases": "",
+  "cuidado": "Resumir com as palavras dele, não com termo técnico.",
+  "indica": "",
+  "status": "rascunho"
+ },
+ {
+  "id": "COM-04",
+  "queixa": "*",
+  "momento": 5,
+  "info": "Se concorda com o plano e se sente seguro",
+  "tipo": "opcao",
+  "opcoes": [
+   "Concorda",
+   "Não se sente seguro para seguir",
+   "Quer seguir apesar da orientação"
+  ],
+  "obrigatoria": "sim",
+  "perguntas": [
+   "Pelo que você me contou, o melhor é [plano]. O que você acha? Se sente seguro assim?"
+  ],
+  "frases": "\"dá pra ir sim\", \"não confio nesse freio\"",
+  "cuidado": "Regra 1: não se sente seguro, não segue. Regra 2: a opinião não rebaixa P0; explicar o motivo com respeito.",
+  "indica": "Não se sente seguro: atendimento no local. Quer seguir com P0: manter e passar ao analista.",
+  "status": "rascunho"
+ },
+ {
+  "id": "FR-09",
+  "queixa": "freio",
+  "momento": 4,
+  "info": "Luz ou mensagem no painel e a cor",
+  "tipo": "opcao",
+  "opcoes": [
+   "Vermelha",
+   "Amarela ou laranja",
+   "Piscando",
+   "Nenhuma",
+   "Não sei"
+  ],
+  "obrigatoria": "sim",
+  "perguntas": [
+   "Acendeu alguma luz no painel? De que cor?",
+   "Apareceu alguma mensagem?"
+  ],
+  "frases": "\"luz vermelha\", \"apareceu ABS\", \"acendeu um negocinho amarelo\"",
+  "cuidado": "Se não souber descrever, pedir o desenho ou o que está escrito.",
+  "indica": "Vermelha: FS-03 (P0). Amarela do ABS com freio normal: FS-12.",
+  "status": "rascunho"
+ },
+ {
+  "id": "FR-10",
+  "queixa": "freio",
+  "momento": 4,
+  "info": "Como está a pressão de ar (ponteiro)",
+  "tipo": "opcao",
+  "opcoes": [
+   "Normal",
+   "Baixa, mas sobe",
+   "Demora muito",
+   "Não sobe",
+   "Cai a cada pisada",
+   "Não sei ver"
+  ],
+  "obrigatoria": "nao",
+  "perguntas": [
+   "Dá uma olhada no ponteiro do ar: está no normal?",
+   "Com o motor ligado, ele sobe?"
+  ],
+  "frases": "\"o ar não sobe\", \"demora pra encher\", \"cai toda vez que piso\"",
+  "cuidado": "Se não souber onde fica o ponteiro, explicar sem pressa.",
+  "indica": "Não sobe: FS-03 (P0). Demora: FS-08. Cai a cada pisada: FS-07.",
+  "status": "rascunho"
+ },
+ {
+  "id": "FR-11",
+  "queixa": "freio",
+  "momento": 4,
+  "info": "Chiado de ar e onde",
+  "tipo": "opcao",
+  "opcoes": [
+   "Rodas traseiras",
+   "Rodas dianteiras",
+   "Perto do motor ou dos tanques",
+   "Não ouve"
+  ],
+  "obrigatoria": "nao",
+  "perguntas": [
+   "Dá para ouvir ar escapando? Mais ou menos de onde vem?"
+  ],
+  "frases": "\"tá chiando\", \"vaza ar na traseira\"",
+  "cuidado": "Só pedir para descer e ouvir se o local for seguro.",
+  "indica": "Ajuda a separar os modos de falha.",
+  "status": "rascunho"
+ },
+ {
+  "id": "FR-12",
+  "queixa": "freio",
+  "momento": 4,
+  "info": "Como o freio responde ao pisar",
+  "tipo": "opcao",
+  "opcoes": [
+   "Fraco, demora para parar",
+   "Puxa para um lado",
+   "Duro ou pega de repente",
+   "Não solta",
+   "Freia sozinho andando",
+   "Normal"
+  ],
+  "obrigatoria": "sim",
+  "perguntas": [
+   "E o pedal, como está?",
+   "Quando você pisa, o que ele faz?"
+  ],
+  "frases": "\"pedal vai no fundo\" = fraco; \"puxa pra um lado\" = puxa; \"pega de repente\" = duro; \"caminhão pesado\" = não solta; \"freia sozinho\" = aplica sozinho",
+  "cuidado": "Começar aberto; oferecer as opções só se ele não souber descrever.",
+  "indica": "Fraco: FS-05. Puxa: FS-09. Duro: FS-10. Não solta: FS-02. Freia sozinho: FS-04.",
+  "status": "rascunho"
+ },
+ {
+  "id": "FR-13",
+  "queixa": "freio",
+  "momento": 4,
+  "info": "Freio de estacionamento",
+  "tipo": "opcao",
+  "opcoes": [
+   "Normal",
+   "Não solta",
+   "Não segura",
+   "Não sei"
+  ],
+  "obrigatoria": "nao",
+  "perguntas": [
+   "E o freio de mão, está soltando e segurando normal?"
+  ],
+  "frases": "\"não solta o freio de mão\", \"desce com o freio puxado\"",
+  "cuidado": "",
+  "indica": "Não segura: FS-06 (P0). Não solta com ar normal: FS-11.",
+  "status": "rascunho"
+ },
+ {
+  "id": "FR-14",
+  "queixa": "freio",
+  "momento": 4,
+  "info": "Quando e em que situação começou",
+  "tipo": "opcao",
+  "opcoes": [
+   "Descida longa",
+   "Após lavagem, lama ou buraco",
+   "Após serviço de freio",
+   "Desde a partida",
+   "Do nada, rodando"
+  ],
+  "obrigatoria": "nao",
+  "perguntas": [
+   "Como foi que começou? O que você estava fazendo na hora?"
+  ],
+  "frases": "\"começou na descida\", \"depois da lavagem\"",
+  "cuidado": "Deixar recontar a cena. Não induzir.",
+  "indica": "Ajuda o prestador a chegar com a peça certa.",
+  "status": "rascunho"
+ },
+ {
+  "id": "FR-15",
+  "queixa": "freio",
+  "momento": 4,
+  "info": "Alguma roda mais quente que as outras",
+  "tipo": "opcao",
+  "opcoes": [
+   "Sim",
+   "Não",
+   "Não é seguro verificar"
+  ],
+  "obrigatoria": "nao",
+  "perguntas": [
+   "Se for seguro descer, chega perto das rodas sem encostar: alguma está bem mais quente?"
+  ],
+  "frases": "\"a roda de trás tá fervendo\"",
+  "cuidado": "Nunca pedir para tocar na roda.",
+  "indica": "Uma roda quente: freio preso (FS-02).",
+  "status": "rascunho"
+ },
+ {
+  "id": "FR-16",
+  "queixa": "freio",
+  "momento": 4,
+  "info": "Serviço recente no freio",
+  "tipo": "opcao",
+  "opcoes": [
+   "Sim",
+   "Não",
+   "Não sei"
+  ],
+  "obrigatoria": "nao",
+  "perguntas": [
+   "Mexeram no freio dele faz pouco tempo?"
+  ],
+  "frases": "\"acabou de sair da oficina\"",
+  "cuidado": "Sem tom de cobrança.",
+  "indica": "Sim: regulagem (F-025, F-071) e garantia do prestador anterior.",
+  "status": "rascunho"
+ },
+ {
+  "id": "LP-01",
+  "queixa": "luz_painel",
+  "momento": 4,
+  "info": "Cor da luz",
+  "tipo": "opcao",
+  "opcoes": [
+   "Vermelha",
+   "Amarela ou laranja",
+   "Verde ou azul",
+   "Não sei"
+  ],
+  "obrigatoria": "sim",
+  "perguntas": [
+   "De que cor é a luz que acendeu?"
+  ],
+  "frases": "\"luz vermelha\", \"um amarelinho\"",
+  "cuidado": "Se não souber, pedir que descreva o desenho.",
+  "indica": "Vermelha: parar. Amarela: seguir com cautela até a oficina.",
+  "status": "rascunho"
+ },
+ {
+  "id": "LP-02",
+  "queixa": "luz_painel",
+  "momento": 4,
+  "info": "Fixa ou piscando",
+  "tipo": "opcao",
+  "opcoes": [
+   "Fixa",
+   "Piscando",
+   "Não sei"
+  ],
+  "obrigatoria": "nao",
+  "perguntas": [
+   "Ela está acesa direto ou piscando?"
+  ],
+  "frases": "\"tá piscando\"",
+  "cuidado": "",
+  "indica": "Piscando é mais urgente que fixa.",
+  "status": "rascunho"
+ },
+ {
+  "id": "LP-03",
+  "queixa": "luz_painel",
+  "momento": 4,
+  "info": "Qual luz ou mensagem",
+  "tipo": "opcao",
+  "opcoes": [
+   "Pressão do óleo",
+   "Temperatura",
+   "Ar ou freio",
+   "Bateria ou carga",
+   "Injeção ou motor",
+   "Emissões ou ARLA",
+   "Filtro de partículas",
+   "Filtro de ar",
+   "Cabine destravada",
+   "ABS",
+   "Tacógrafo",
+   "Outra ou não sei"
+  ],
+  "obrigatoria": "sim",
+  "perguntas": [
+   "Qual é o desenho da luz ou o que está escrito?",
+   "Se der, me manda uma foto do painel no WhatsApp."
+  ],
+  "frases": "\"aquela da almotolia\" = óleo; \"termômetro\" = temperatura; \"bateria\"",
+  "cuidado": "Foto do painel ajuda muito. Só com o veículo parado.",
+  "indica": "",
+  "status": "rascunho"
+ },
+ {
+  "id": "LP-04",
+  "queixa": "luz_painel",
+  "momento": 4,
+  "info": "O motor mudou de comportamento",
+  "tipo": "opcao",
+  "opcoes": [
+   "Normal",
+   "Perdeu força",
+   "Apagou",
+   "Não sei"
+  ],
+  "obrigatoria": "nao",
+  "perguntas": [
+   "E o motor, continua normal?"
+  ],
+  "frases": "\"ficou fraco\", \"apagou sozinho\"",
+  "cuidado": "",
+  "indica": "",
+  "status": "rascunho"
+ },
+ {
+  "id": "SA-01",
+  "queixa": "superaquecimento",
+  "momento": 4,
+  "info": "Qual sinal de temperatura",
+  "tipo": "opcao",
+  "opcoes": [
+   "Ponteiro alto ou luz vermelha",
+   "Mensagem amarela de nível baixo",
+   "Só cheiro ou desconfiança",
+   "Não sei"
+  ],
+  "obrigatoria": "sim",
+  "perguntas": [
+   "O que você viu no painel: o ponteiro subiu ou acendeu alguma luz?"
+  ],
+  "frases": "\"o ponteiro subiu\", \"passou do meio\", \"acendeu o termômetro\"",
+  "cuidado": "",
+  "indica": "",
+  "status": "rascunho"
+ },
+ {
+  "id": "SA-02",
+  "queixa": "superaquecimento",
+  "momento": 4,
+  "info": "Vapor ou líquido vazando",
+  "tipo": "opcao",
+  "opcoes": [
+   "Vapor",
+   "Pingando ou poça",
+   "Não"
+  ],
+  "obrigatoria": "nao",
+  "perguntas": [
+   "Está saindo vapor ou pingando alguma coisa embaixo?"
+  ],
+  "frases": "\"tá fumegando\", \"tem uma poça\"",
+  "cuidado": "Não abrir o reservatório quente.",
+  "indica": "",
+  "status": "rascunho"
+ },
+ {
+  "id": "SA-03",
+  "queixa": "superaquecimento",
+  "momento": 4,
+  "info": "Fumaça branca contínua no escapamento",
+  "tipo": "opcao",
+  "opcoes": [
+   "Sim",
+   "Não"
+  ],
+  "obrigatoria": "nao",
+  "perguntas": [
+   "Está saindo fumaça branca pelo escapamento sem parar?"
+  ],
+  "frases": "\"fumaça branca\"",
+  "cuidado": "",
+  "indica": "",
+  "status": "rascunho"
+ },
+ {
+  "id": "SA-04",
+  "queixa": "superaquecimento",
+  "momento": 4,
+  "info": "Óleo na água ou água no óleo",
+  "tipo": "opcao",
+  "opcoes": [
+   "Sim",
+   "Não",
+   "Não sei olhar"
+  ],
+  "obrigatoria": "nao",
+  "perguntas": [
+   "Dá para ver óleo boiando no reservatório de água, ou o óleo com cor de café com leite?"
+  ],
+  "frases": "\"maionese\"",
+  "cuidado": "Só olhar com o motor frio e se souber.",
+  "indica": "",
+  "status": "rascunho"
+ },
+ {
+  "id": "SA-05",
+  "queixa": "superaquecimento",
+  "momento": 4,
+  "info": "Correia no lugar",
+  "tipo": "opcao",
+  "opcoes": [
+   "Sim",
+   "Não",
+   "Não sei"
+  ],
+  "obrigatoria": "nao",
+  "perguntas": [
+   "A correia do motor está no lugar?"
+  ],
+  "frases": "\"a correia arrebentou\"",
+  "cuidado": "",
+  "indica": "",
+  "status": "rascunho"
+ },
+ {
+  "id": "SA-06",
+  "queixa": "superaquecimento",
+  "momento": 4,
+  "info": "Situação em que aconteceu",
+  "tipo": "opcao",
+  "opcoes": [
+   "Subida ou carregado",
+   "Trânsito parado",
+   "Bombeando parado",
+   "Rodando normal"
+  ],
+  "obrigatoria": "nao",
+  "perguntas": [
+   "O que você estava fazendo quando o ponteiro subiu?"
+  ],
+  "frases": "\"subindo a serra\"",
+  "cuidado": "Deixar recontar a cena.",
+  "indica": "",
+  "status": "rascunho"
+ },
+ {
+  "id": "PF-01",
+  "queixa": "perda_forca",
+  "momento": 4,
+  "info": "Luz no painel",
+  "tipo": "opcao",
+  "opcoes": [
+   "Vermelha",
+   "Amarela ou laranja",
+   "Nenhuma",
+   "Não sei"
+  ],
+  "obrigatoria": "sim",
+  "perguntas": [
+   "Acendeu alguma luz no painel?"
+  ],
+  "frases": "\"acendeu a luz do motor\"",
+  "cuidado": "",
+  "indica": "",
+  "status": "rascunho"
+ },
+ {
+  "id": "PF-02",
+  "queixa": "perda_forca",
+  "momento": 4,
+  "info": "Cor da fumaça",
+  "tipo": "opcao",
+  "opcoes": [
+   "Preta",
+   "Azul",
+   "Branca",
+   "Nenhuma"
+  ],
+  "obrigatoria": "nao",
+  "perguntas": [
+   "Está saindo fumaça? De que cor?"
+  ],
+  "frases": "\"fumaça preta na subida\"",
+  "cuidado": "",
+  "indica": "",
+  "status": "rascunho"
+ },
+ {
+  "id": "PF-03",
+  "queixa": "perda_forca",
+  "momento": 4,
+  "info": "Barulho do motor",
+  "tipo": "opcao",
+  "opcoes": [
+   "Assobio ou sirene",
+   "Falhando ou engasgando",
+   "Nenhum diferente"
+  ],
+  "obrigatoria": "nao",
+  "perguntas": [
+   "Ouviu algum barulho diferente: assobio, engasgo?"
+  ],
+  "frases": "\"tá assobiando\", \"tá engasgando\"",
+  "cuidado": "",
+  "indica": "",
+  "status": "rascunho"
+ },
+ {
+  "id": "PF-04",
+  "queixa": "perda_forca",
+  "momento": 4,
+  "info": "ARLA 32",
+  "tipo": "opcao",
+  "opcoes": [
+   "Normal",
+   "Baixo ou vazio",
+   "Abasteceu recentemente",
+   "Não sei"
+  ],
+  "obrigatoria": "nao",
+  "perguntas": [
+   "E o ARLA, tem no tanque?"
+  ],
+  "frases": "\"acabou o arla\"",
+  "cuidado": "",
+  "indica": "",
+  "status": "rascunho"
+ },
+ {
+  "id": "PF-05",
+  "queixa": "perda_forca",
+  "momento": 4,
+  "info": "Abastecimento de diesel recente em posto diferente",
+  "tipo": "opcao",
+  "opcoes": [
+   "Sim",
+   "Não"
+  ],
+  "obrigatoria": "nao",
+  "perguntas": [
+   "Abasteceu diesel em algum posto diferente do costume?"
+  ],
+  "frases": "\"abasteci na estrada\"",
+  "cuidado": "",
+  "indica": "",
+  "status": "rascunho"
+ },
+ {
+  "id": "PF-06",
+  "queixa": "perda_forca",
+  "momento": 4,
+  "info": "O motor apagou",
+  "tipo": "opcao",
+  "opcoes": [
+   "Não",
+   "Apagou e religou",
+   "Apagou e não liga"
+  ],
+  "obrigatoria": "sim",
+  "perguntas": [
+   "O motor chegou a apagar?"
+  ],
+  "frases": "\"morreu\", \"apagou\"",
+  "cuidado": "",
+  "indica": "",
+  "status": "rascunho"
+ },
+ {
+  "id": "NL-01",
+  "queixa": "nao_liga",
+  "momento": 4,
+  "info": "O que acontece ao virar a chave",
+  "tipo": "opcao",
+  "opcoes": [
+   "Nada, nem o painel",
+   "Painel acende, só faz clique",
+   "Gira devagar",
+   "Gira normal e não pega"
+  ],
+  "obrigatoria": "sim",
+  "perguntas": [
+   "Quando você vira a chave, o que acontece?"
+  ],
+  "frases": "\"não faz nada\", \"só tec-tec\", \"gira mas não pega\"",
+  "cuidado": "",
+  "indica": "",
+  "status": "rascunho"
+ },
+ {
+  "id": "NL-02",
+  "queixa": "nao_liga",
+  "momento": 4,
+  "info": "Chave geral ligada",
+  "tipo": "opcao",
+  "opcoes": [
+   "Sim",
+   "Não",
+   "Não sei"
+  ],
+  "obrigatoria": "nao",
+  "perguntas": [
+   "A chave geral está ligada?"
+  ],
+  "frases": "",
+  "cuidado": "Pergunta simples, sem tom de culpa.",
+  "indica": "",
+  "status": "rascunho"
+ },
+ {
+  "id": "NL-03",
+  "queixa": "nao_liga",
+  "momento": 4,
+  "info": "Combustível",
+  "tipo": "opcao",
+  "opcoes": [
+   "Tem",
+   "Pode ter acabado",
+   "Não sei"
+  ],
+  "obrigatoria": "nao",
+  "perguntas": [
+   "Tem diesel no tanque?"
+  ],
+  "frases": "\"tá na reserva\"",
+  "cuidado": "",
+  "indica": "",
+  "status": "rascunho"
+ },
+ {
+  "id": "NL-04",
+  "queixa": "nao_liga",
+  "momento": 4,
+  "info": "Algo ficou ligado com o motor desligado",
+  "tipo": "opcao",
+  "opcoes": [
+   "Sim",
+   "Não",
+   "Não sei"
+  ],
+  "obrigatoria": "nao",
+  "perguntas": [
+   "Ficou alguma coisa ligada com o motor desligado?"
+  ],
+  "frases": "\"esqueci o farol\"",
+  "cuidado": "",
+  "indica": "",
+  "status": "rascunho"
+ },
+ {
+  "id": "NL-05",
+  "queixa": "nao_liga",
+  "momento": 4,
+  "info": "Mensagem de bateria antes",
+  "tipo": "opcao",
+  "opcoes": [
+   "Sim",
+   "Não"
+  ],
+  "obrigatoria": "nao",
+  "perguntas": [
+   "Antes de parar, apareceu alguma luz de bateria?"
+  ],
+  "frases": "",
+  "cuidado": "",
+  "indica": "",
+  "status": "rascunho"
+ }
+]
