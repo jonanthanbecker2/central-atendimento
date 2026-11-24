@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import { definirUsuario, useBanco, type Usuario } from './dados/store';
 import { Fila } from './telas/Fila';
 import { Atendimento } from './telas/Atendimento';
@@ -6,6 +6,40 @@ import { Validacao } from './telas/Validacao';
 import { PainelCentro } from './telas/PainelCentro';
 import { Dados } from './telas/Dados';
 import { retornoPendente } from './ui';
+import { NUVEM, assinarEstadoSync, entrar, lerEstadoSync, retomarSessao, sair } from './dados/nuvem';
+import { reconferirIA } from './ia/cliente';
+
+/** Site online: login individual (e-mail e senha criados pela gestão no Supabase). */
+function EntrarNuvem() {
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [erro, setErro] = useState('');
+  const [indo, setIndo] = useState(false);
+  const ir = async () => {
+    setIndo(true); setErro('');
+    const e = await entrar(email, senha);
+    reconferirIA();
+    setIndo(false);
+    if (e) setErro(e);
+  };
+  return (
+    <div className="entrar">
+      <h1>Central de Atendimento da Automotiva</h1>
+      <p className="suave">Entre com o seu login. Tudo o que você registrar fica gravado com o seu nome.</p>
+      <label>E-mail<input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoFocus autoComplete="username" /></label>
+      <label>Senha<input type="password" value={senha} onChange={(e) => setSenha(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && ir()} autoComplete="current-password" /></label>
+      {erro && <p className="aviso">{erro}</p>}
+      <button className="primario" disabled={indo || !email.trim() || !senha} onClick={ir}>{indo ? 'Entrando…' : 'Entrar'}</button>
+    </div>
+  );
+}
+
+function AvisoSync() {
+  const st = useSyncExternalStore(assinarEstadoSync, lerEstadoSync);
+  if (st.erro) return <span className="sync erro" title={st.erro}>⚠ {st.erro}</span>;
+  if (st.pendentes) return <span className="sync">gravando…</span>;
+  return <span className="sync ok" title={st.ultimaVez ? `Última conferência: ${new Date(st.ultimaVez).toLocaleTimeString('pt-BR')}` : ''}>gravado</span>;
+}
 
 function useRota() {
   const [h, setH] = useState(window.location.hash || '#/fila');
@@ -47,8 +81,11 @@ export default function App() {
   const u = banco.usuario;
   const [, tique] = useState(0);
   useEffect(() => { const t = setInterval(() => tique((x) => x + 1), 30000); return () => clearInterval(t); }, []);
+  const [pronto, setPronto] = useState(!NUVEM);
+  useEffect(() => { if (NUVEM) retomarSessao().finally(() => { reconferirIA(); setPronto(true); }); }, []);
 
-  if (!u) return <Entrar />;
+  if (!pronto) return <div className="entrar"><p className="suave">Abrindo a central…</p></div>;
+  if (!u) return NUVEM ? <EntrarNuvem /> : <Entrar />;
 
   const atrasados = banco.protocolos.filter((p) => {
     const r = retornoPendente(p);
@@ -70,7 +107,7 @@ export default function App() {
             <a key={k} href={`#/${k}`} className={tela === k ? 'ativo' : ''}>{t}{k === 'fila' && atrasados > 0 && <span className="bolha">{atrasados}</span>}</a>
           ))}
         </nav>
-        <span className="usuario">{u.nome} · {u.perfil}{u.centro ? ` · ${u.centro}` : ''} <button className="link" onClick={() => definirUsuario(undefined)}>sair</button></span>
+        <span className="usuario">{NUVEM && <AvisoSync />} {u.nome} · {u.perfil}{u.centro ? ` · ${u.centro}` : ''} <button className="link" onClick={() => (NUVEM ? sair().then(reconferirIA) : definirUsuario(undefined))}>sair</button></span>
       </header>
       <main>
         {tela === 'fila' && <Fila />}

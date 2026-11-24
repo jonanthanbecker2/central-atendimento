@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { alterarPreventiva, apagarProtocolos, carregarExemplos, exportarBackup, importarBackup, importarCsv, incluirPreventiva, removerPreventiva, useBanco } from '../dados/store';
 import { emAberto, fmtKm, kmReferencia, situacao } from '../dados/preventivas';
 import { fmtDia } from '../ui';
-import { IA_ONLINE, codigoIA, definirCodigoIA, statusIA, avisoIADesligada, type StatusIA } from '../ia/cliente';
+import { IA_ONLINE, reconferirIA, statusIA, avisoIADesligada, type StatusIA } from '../ia/cliente';
+import { NUVEM } from '../dados/nuvem';
 import { useEffect } from 'react';
 import { catalogo, itens, saidas } from '../conteudo';
 
@@ -52,10 +53,12 @@ export function Dados() {
         </tbody>
       </table>
       <div className="linha">
-        <button onClick={() => carregarExemplos().then(() => setMsg('Planilhas de exemplo carregadas (dados fictícios).'))}>Carregar exemplos fictícios</button>
+        <button onClick={() => (!NUVEM || confirm('Isto troca as planilhas de TODA a equipe pelos exemplos fictícios. Continuar?')) && carregarExemplos().then(() => setMsg('Planilhas de exemplo carregadas (dados fictícios).'))}>Carregar exemplos fictícios</button>
         <button onClick={baixar}>Baixar cópia de segurança</button>
-        <label className="botao">Restaurar cópia<input type="file" accept=".json" hidden onChange={(e) => e.target.files?.[0]?.text().then((t) => { importarBackup(t); setMsg('Cópia restaurada.'); })} /></label>
-        <button onClick={() => { if (confirm('Apagar todos os protocolos deste computador?')) { apagarProtocolos(); setMsg('Protocolos apagados.'); } }}>Apagar protocolos de teste</button>
+        {!NUVEM && <>
+          <label className="botao">Restaurar cópia<input type="file" accept=".json" hidden onChange={(e) => e.target.files?.[0]?.text().then((t) => { importarBackup(t); setMsg('Cópia restaurada.'); })} /></label>
+          <button onClick={() => { if (confirm('Apagar todos os protocolos deste computador?')) { apagarProtocolos(); setMsg('Protocolos apagados.'); } }}>Apagar protocolos de teste</button>
+        </>}
       </div>
       <AcessoIA />
       <CadastroPreventivas />
@@ -129,25 +132,16 @@ function CadastroPreventivas() {
   );
 }
 
-/** Código de acesso da IA no site online: cada atendente informa uma vez neste navegador. */
+/** Situação da IA (no site online, a IA usa o login de cada pessoa; não há código para digitar). */
 function AcessoIA() {
-  const [codigo, setCodigo] = useState(codigoIA());
   const [st, setSt] = useState<StatusIA | null>(null);
-  const conferir = () => { setSt(null); statusIA().then(setSt); };
+  const conferir = () => { setSt(null); reconferirIA(); statusIA().then(setSt); };
   useEffect(conferir, []);
   return (
     <>
       <h3>IA (Claude)</h3>
-      {IA_ONLINE ? (
-        <>
-          <p className="suave">No site online, a IA pede um código de acesso, combinado com quem administra a central. Ele fica guardado só neste navegador.</p>
-          <div className="linha">
-            <label>Código de acesso da IA<input type="password" value={codigo} onChange={(e) => setCodigo(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && (definirCodigoIA(codigo), conferir())} style={{ width: 220 }} /></label>
-            <button className="primario" onClick={() => { definirCodigoIA(codigo); conferir(); }}>Salvar e testar</button>
-          </div>
-        </>
-      ) : <p className="suave">Protótipo local: a IA usa a chave do arquivo .env deste computador.</p>}
-      <p className={st?.ativa ? 'ok' : 'suave'}>{st === null ? 'Conferindo a IA…' : st.ativa ? `IA ligada (${st.modelo ?? 'Claude'}).` : avisoIADesligada(st)}</p>
+      <p className="suave">{IA_ONLINE ? 'No site online, a IA responde a quem entrou com login individual e perfil liberado. Cada orientação fica gravada no banco, com o protocolo e o bloco da conversa.' : 'Protótipo local: a IA usa a chave do arquivo .env deste computador.'}</p>
+      <div className="linha"><p className={st?.ativa ? 'ok' : 'suave'}>{st === null ? 'Conferindo a IA…' : st.ativa ? `IA ligada (${st.modelo ?? 'Claude'}).` : avisoIADesligada(st)}</p><button onClick={conferir}>Conferir de novo</button></div>
     </>
   );
 }

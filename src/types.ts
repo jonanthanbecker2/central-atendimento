@@ -225,4 +225,38 @@ export interface Protocolo {
   osRascunhos?: RascunhoOS[]; // ordens de serviço em edição, uma por tipo de serviço da parada
   ordens?: OrdemServico[]; // ordens de serviço emitidas (todas as versões de todas as OS)
   passos?: Record<string, boolean>; // marcos do roteiro (acolheu, ouviu, pulou item...)
+  fotosVeiculo?: FotoVeiculo[]; // o que a tela mostrava do veículo em cada decisão
+  orientacoesIA?: OrientacaoMostrada[]; // o que o painel da IA mostrou em cada bloco da conversa
+}
+
+/** Orientação mostrada no painel (do Claude ou, sem IA, das regras) num bloco da conversa. */
+export interface OrientacaoMostrada {
+  em: string;
+  autor: string;
+  passo: string;
+  momento: number;
+  item?: string;
+  fonte: 'claude' | 'regras';
+  aviso?: string;
+  fala?: string;
+  dica: string;
+  atencao?: string;
+  ja_respondidos: { item: string; valor: string; trecho: string }[];
+  falta_perguntar: { item: string; pergunta: string }[];
+  falhas: { codigo: string; motivo: string }[];
+  queixa_sugerida: string | null;
+  ms?: number;
+}
+
+/** Cópia do histórico do veículo como a tela mostrou, no momento de uma decisão. */
+export interface FotoVeiculo {
+  em: string;
+  autor: string;
+  momento: 'frota_informada' | 'direcionado' | 'passado_adiante';
+  frota: string;
+  kmInformado: string;
+  veiculo?: Veiculo;
+  historico: Historico[];
+  checklist: ChecklistAberto[];
+  preventivasEmAberto: (Preventiva & { situacao: string })[];
 }

@@ -1,6 +1,9 @@
 # Publica o site no GitHub Pages a cada envio para a branch main.
 # Configure em Settings → Secrets and variables → Actions → Variables:
-#   VITE_IA_URL = endereço da função "ia" no Supabase (ex.: https://xxxx.supabase.co/functions/v1/ia)
+#   VITE_SUPABASE_URL      = endereço do projeto no Supabase (ex.: https://xxxx.supabase.co)
+#   VITE_SUPABASE_ANON_KEY = chave pública (anon / publishable) do projeto — é pública por natureza;
+#                            quem protege os dados são o login e as regras de acesso (RLS)
+#   VITE_IA_URL            = opcional; sem ela, a IA usa a função "ia" do mesmo projeto
 name: Publicar site
 on:
   push:
@@ -26,6 +29,8 @@ jobs:
       - run: npm test
       - run: npm run build
         env:
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
           VITE_IA_URL: ${{ vars.VITE_IA_URL }}
       - uses: actions/upload-pages-artifact@v3
         with:

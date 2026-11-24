@@ -56,21 +56,28 @@ Os modelos estão em `public/modelos/` (dados fictícios). No Excel, salve como 
 - `servidor/nucleo.ts` — núcleo da IA (monta o pedido, chama o Claude, descarta códigos inexistentes). Usado pelo servidor local (`servidor/ia.ts`, chave no `.env`) e pela função online (`supabase/functions/ia/index.ts`, gerada por `npm run funcao`).
 - A IA só sugere; prioridade, nível e travas são do motor de regras.
 
-## Publicar online com a IA
+## Publicar online (banco, login e IA)
 
-O site fica no GitHub Pages; a IA fica numa função do Supabase, que guarda a chave da Anthropic. A chave nunca vai para o site.
+O site fica no GitHub Pages. O Supabase guarda os dados da equipe, faz o login de cada pessoa e roda a função da IA, que guarda a chave da Anthropic (a chave nunca vai para o site).
 
-1. **Função da IA (Supabase).** No painel do projeto: *Edge Functions → Deploy a new function → Via Editor*, nome `ia`. Apague o exemplo, cole todo o conteúdo de `supabase/functions/ia/index.ts` e publique. Nos detalhes da função, desligue **Enforce JWT verification** (o acesso é protegido pelo código de acesso).
-2. **Segredos da função** (*Edge Functions → Secrets*): `ANTHROPIC_API_KEY` (a chave), `CODIGO_ACESSO` (um código que só a equipe da central sabe) e `ORIGENS_PERMITIDAS` (o endereço do site, ex.: `https://usuario.github.io`).
-3. **Repositório no GitHub** com este projeto (sem `node_modules`, sem `.env`). Em *Settings → Pages*, fonte **GitHub Actions**. Em *Settings → Secrets and variables → Actions → Variables*, crie `VITE_IA_URL` com o endereço da função (ex.: `https://xxxx.supabase.co/functions/v1/ia`).
-4. A cada envio para a branch `main`, o site é publicado sozinho (aba *Actions*). No site, cada atendente informa o código de acesso uma vez, em *Planilhas e dados*.
+**O que fica gravado no banco:** o protocolo inteiro — respostas do motorista bloco a bloco, relato, classificação de nível, ordens de serviço com todas as versões, eventos com autor e hora, orientação que o painel da IA mostrou em cada bloco (`orientacoesIA`) e a foto do histórico do veículo que estava na tela em cada decisão (`fotosVeiculo`: frota informada, direcionamento, passagem ao analista). Cada gravação guarda também uma cópia da versão anterior (`ca_protocolos_historico`), e a função da IA grava cada pedido e resposta do Claude em `ca_ia_orientacoes`.
+
+1. **Banco.** No Supabase: *SQL Editor → New query*, cole todo o `supabase/migrations/001_central_atendimento.sql` e rode (pode rodar de novo sem estragar nada).
+2. **Logins.** *Authentication → Users → Add user*, um por pessoa (e-mail e senha). Depois, no *SQL Editor*, libere o perfil de cada uma com o trecho do fim do arquivo SQL (perfis: `N1`, `N2`, `N3`, `gestao` ou `centro`; para `centro`, informe o centro de coleta). Sem perfil liberado, o login não entra.
+3. **Função da IA.** *Edge Functions → Deploy a new function → Via Editor*, nome `ia`. Apague o exemplo, cole todo o `supabase/functions/ia/index.ts` e publique. Nos detalhes da função, desligue **Enforce JWT verification**: a própria função confere o login e o perfil de quem pede.
+4. **Segredos da função** (*Edge Functions → Secrets*): `ANTHROPIC_API_KEY` (a chave) e `ORIGENS_PERMITIDAS` (o endereço do site, ex.: `https://usuario.github.io`). O `CODIGO_ACESSO` da versão anterior não é mais usado e pode ser apagado.
+5. **GitHub.** Em *Settings → Pages*, fonte **GitHub Actions**. Em *Settings → Secrets and variables → Actions → Variables*, crie `VITE_SUPABASE_URL` (endereço do projeto, ex.: `https://xxxx.supabase.co`) e `VITE_SUPABASE_ANON_KEY` (chave pública *anon/publishable*, em *Project Settings → API*). A variável `VITE_IA_URL` deixa de ser necessária.
+6. A cada envio para a branch `main`, o site é publicado sozinho (aba *Actions*).
 
 Mudou o núcleo da IA ou o conteúdo (`src/conteudo`)? Rode `npm run funcao` e cole o `index.ts` novo na função.
 
+**Como a equipe trabalha junta:** cada mudança vai para o banco em cerca de 1 segundo; a cada 10 segundos a tela busca o que os colegas mudaram. Se duas pessoas mexem no mesmo protocolo, as listas que só crescem (eventos, orientações, OS, fotos do veículo) são somadas e nada se perde. O número do protocolo vem de uma sequência única do banco. O topo da tela mostra "gravado", "gravando…" ou o aviso de falta de conexão. Ao sair, a cópia deste navegador é apagada. O perfil `centro` só vê o painel do seu centro (frota, queixa, fase, prestador e previsão).
+
 ## Limites conhecidos desta versão
 
-- Dados só no navegador de cada pessoa, também no site publicado (sem banco compartilhado ainda): cada um vê só os protocolos que abriu.
-- Sem login real: o nome e o perfil são escolhidos na entrada.
+- No protótipo local (`npm run dev`, sem Supabase), os dados ficam só neste navegador e o nome e o perfil são escolhidos na entrada.
+- Online, a sincronização é por consulta a cada 10 segundos (não é instantânea) e precisa de conexão; sem conexão, as mudanças ficam guardadas na tela e vão quando ela voltar (não feche a aba antes).
+- Dados reais com a IA só depois da aprovação da TI e do Jurídico (D-06). Nome e telefone do motorista nunca vão para a IA.
 - Árvores das 5 queixas em rascunho; as demais queixas vão ao analista.
 - Não integra com o app de vistoria, o chatbot nem o SAP (fase 6 do PRD).
 - Lançamentos manuais fora do horário: depois que a central estiver pronta (D-09).

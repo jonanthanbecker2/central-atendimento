@@ -2,6 +2,7 @@
 // e a tela avisa que a IA está desligada.
 import type { ItemArvore, Respostas } from '../types';
 import { roteiro } from '../conteudo';
+import { tokenAtual } from '../dados/nuvem';
 
 export interface RespostaIA {
   fonte: 'claude' | 'regras';
@@ -18,25 +19,31 @@ export interface RespostaIA {
 
 // Onde a IA roda:
 // - protótipo local (npm run dev): rota /api/ia do servidor do Vite, chave no .env;
-// - site online: função do Supabase, endereço em VITE_IA_URL (definido na publicação),
-//   protegida por um código de acesso que cada atendente informa uma vez neste navegador.
-export const IA_URL = (import.meta.env.VITE_IA_URL as string | undefined)?.trim() || '';
+// - site online: função "ia" do Supabase. Só responde a quem entrou com login individual
+//   e tem perfil liberado; cada orientação fica gravada no banco (ca_ia_orientacoes).
+const URL_SUPABASE = (import.meta.env.VITE_SUPABASE_URL as string | undefined)?.trim() || '';
+export const IA_URL = (import.meta.env.VITE_IA_URL as string | undefined)?.trim() || (URL_SUPABASE ? `${URL_SUPABASE}/functions/v1/ia` : '');
 export const IA_ONLINE = !!IA_URL;
-const CHAVE_CODIGO = 'central-atendimento:codigo-ia';
-export const codigoIA = () => { try { return localStorage.getItem(CHAVE_CODIGO) ?? ''; } catch { return ''; } };
-export function definirCodigoIA(codigo: string) {
-  try { localStorage.setItem(CHAVE_CODIGO, codigo.trim()); } catch { /* sem armazenamento */ }
-  status = null; // confere de novo com o código novo
-}
-const cabecalhos = (): Record<string, string> => ({ 'content-type': 'application/json', ...(IA_ONLINE ? { 'x-codigo-acesso': codigoIA() } : {}) });
 
-export type StatusIA = { ativa: boolean; modelo?: string; motivo?: 'sem_chave' | 'sem_codigo' | 'codigo_errado' | 'sem_servidor' };
+async function cabecalhos(): Promise<Record<string, string>> {
+  const h: Record<string, string> = { 'content-type': 'application/json' };
+  if (!IA_ONLINE) return h;
+  const anon = (import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined)?.trim();
+  if (anon) h.apikey = anon;
+  const token = await tokenAtual();
+  if (token) h.authorization = `Bearer ${token}`;
+  return h;
+}
+
+export type StatusIA = { ativa: boolean; modelo?: string; motivo?: 'sem_chave' | 'sem_login' | 'sem_servidor' };
 let status: Promise<StatusIA> | null = null;
+/** Esquece o resultado guardado (ao entrar ou sair). */
+export const reconferirIA = () => { status = null; };
 export function statusIA(): Promise<StatusIA> {
-  if (IA_ONLINE && !codigoIA()) return Promise.resolve({ ativa: false, motivo: 'sem_codigo' });
-  status ??= fetch(IA_ONLINE ? IA_URL : '/api/ia/status', { headers: cabecalhos() })
+  status ??= cabecalhos()
+    .then((h) => fetch(IA_ONLINE ? IA_URL : '/api/ia/status', { headers: h }))
     .then(async (r): Promise<StatusIA> => {
-      if (r.status === 401) return { ativa: false, motivo: 'codigo_errado' };
+      if (r.status === 401 || r.status === 403) return { ativa: false, motivo: 'sem_login' };
       if (!r.ok) return { ativa: false, motivo: 'sem_servidor' };
       const j = await r.json();
       return j.ativa ? j : { ...j, motivo: 'sem_chave' };
@@ -48,8 +55,7 @@ export function statusIA(): Promise<StatusIA> {
 /** Frase para o painel quando a IA não está disponível. */
 export function avisoIADesligada(st: StatusIA): string {
   switch (st.motivo) {
-    case 'sem_codigo': return 'IA desligada: informe o código de acesso da IA em “Planilhas e dados”. Orientação pelas regras.';
-    case 'codigo_errado': return 'IA desligada: o código de acesso da IA está incorreto (confira em “Planilhas e dados”). Orientação pelas regras.';
+    case 'sem_login': return 'IA desligada: login sem permissão para a IA (entre de novo ou peça à gestão para liberar seu perfil). Orientação pelas regras.';
     case 'sem_servidor': return IA_ONLINE ? 'IA fora do ar (sem resposta do servidor). Orientação pelas regras.' : 'IA desligada (servidor local sem resposta). Orientação pelas regras.';
     default: return IA_ONLINE ? 'IA desligada (servidor sem a chave da Anthropic). Orientação pelas regras.' : 'IA desligada (sem chave no arquivo .env). Orientação pelas regras.';
   }
@@ -75,9 +81,9 @@ export function orientacaoPorRegras(itens: ItemArvore[], r: Respostas, momento: 
   };
 }
 
-export async function pedirIA(p: { queixa: string; relato: string; respostas: Respostas; momento: number; passo?: string; itemAtual?: string; veiculo?: object }, signal?: AbortSignal): Promise<RespostaIA | { erro: string } | null> {
+export async function pedirIA(p: { protocoloId?: string; queixa: string; relato: string; respostas: Respostas; momento: number; passo?: string; itemAtual?: string; veiculo?: object }, signal?: AbortSignal): Promise<RespostaIA | { erro: string } | null> {
   try {
-    const r = await fetch(IA_ONLINE ? IA_URL : '/api/ia', { method: 'POST', headers: cabecalhos(), body: JSON.stringify(p), signal });
+    const r = await fetch(IA_ONLINE ? IA_URL : '/api/ia', { method: 'POST', headers: await cabecalhos(), body: JSON.stringify(p), signal });
     const j = await r.json();
     if (!r.ok) return { erro: explicar(j.erro ?? `erro ${r.status}`, j.detalhe ?? '') };
     return { fonte: 'claude', ...j };
@@ -91,7 +97,7 @@ export async function pedirIA(p: { queixa: string; relato: string; respostas: Re
 function explicar(codigo: string, detalhe: string): string {
   const d = detalhe.toLowerCase();
   if (d.includes('credit balance')) return 'sem saldo na conta da API — adicione créditos em Billing no Console da Anthropic';
-  if (codigo === 'codigo_acesso') return 'código de acesso da IA incorreto — confira em “Planilhas e dados”';
+  if (codigo === 'sem_login' || codigo === 'sem_perfil') return 'login sem permissão para a IA — entre de novo ou peça à gestão para liberar seu perfil';
   if (codigo === 'origem_nao_permitida') return 'este endereço do site não está liberado na função da IA (ORIGENS_PERMITIDAS)';
   if (codigo === 'limite_minuto') return 'muitos pedidos à IA neste minuto — espere um pouco';
   if (codigo === 'api_401') return IA_ONLINE ? 'chave da Anthropic inválida no servidor — confira o segredo ANTHROPIC_API_KEY no Supabase' : 'chave inválida — confira se a chave foi colada inteira no arquivo .env';

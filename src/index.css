@@ -137,3 +137,6 @@ label.trocar-tipo { flex-direction: row !important; align-items:center; gap: 6px
 .prev-os .vencida { color:#b3261e; font-weight:600; } .prev-os .proxima { color:#9a5b00; font-weight:600; }
 .form-prev { align-items: flex-end; flex-wrap: wrap; } td.acoes { white-space: nowrap; } td.acoes button { margin-right: 6px; }
 .preventivas .vencida, td .vencida { color: #b3261e; } td .proxima { color: #9a5b00; }
+.topo .sync { font-size: 11px; padding: 1px 6px; border-radius: 8px; background:#2c3b4d; color:#c9d3de; margin-right: 6px; }
+.topo .sync.ok { color:#9fd3a8; }
+.topo .sync.erro { background:#7a2a1f; color:#fff; max-width: 320px; display:inline-block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; vertical-align:middle; }

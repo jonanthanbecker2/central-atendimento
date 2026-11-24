@@ -3,7 +3,7 @@
 //    Cada fala sugerida aparece como mensagem; a resposta do motorista vira um balão e abre a próxima.
 // B. Histórico do veículo (esquerda, embaixo) · C. Orientação da IA + resultado das regras (lateral)
 import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { atualizar, lerBanco, mudarEstado, useBanco } from '../dados/store';
+import { atualizar, lerBanco, mudarEstado, registrarFotoVeiculo, useBanco } from '../dados/store';
 import { falhaPorId, itens as todosItens, itensDaQueixa, queixaPorId, queixas, roteiro, saidasDaQueixa, temArvore } from '../conteudo';
 import { triar, type ResultadoTriagem } from '../motor/motor';
 import { EditorOS, osEmDia, resumoOrdens } from './OrdemServico';
@@ -11,7 +11,7 @@ import { emAberto, fmtKm, kmReferencia, situacao } from '../dados/preventivas';
 import { pendentes } from '../motor/roteiro';
 import { avisoIADesligada, orientacaoPorRegras, pedirIA, statusIA, type RespostaIA } from '../ia/cliente';
 import { ESTADOS, Prio, fmtData, fmtDia, ir, retornoPendente } from '../ui';
-import type { ItemArvore, Nivel, Prestador, Protocolo, Veiculo } from '../types';
+import type { ItemArvore, Nivel, OrientacaoMostrada, Prestador, Protocolo, Veiculo } from '../types';
 
 const paraInput = (iso?: string) => (iso ? new Date(new Date(iso).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : '');
 const deInput = (v: string) => (v ? new Date(v).toISOString() : undefined);
@@ -327,7 +327,7 @@ function CompositorQueixa({ p, sugerida, orient }: { p: Protocolo; sugerida?: st
 function CompositorFrota({ p }: { p: Protocolo }) {
   const [f, setF] = useState(p.frota);
   const [k, setK] = useState(p.km);
-  const ok = () => f.trim() && k.trim() && atualizar(p.id, { frota: f.trim(), km: k.trim() }, { tipo: 'veiculo', detalhe: `frota ${f} · ${k} km` });
+  const ok = () => { if (!f.trim() || !k.trim()) return; atualizar(p.id, { frota: f.trim(), km: k.trim() }, { tipo: 'veiculo', detalhe: `frota ${f} · ${k} km` }); registrarFotoVeiculo(p.id, 'frota_informada'); };
   return (
     <div className="msg compositor">
       <div className="linha">
@@ -478,12 +478,14 @@ function Fechar({ p, res, veiculo, prestadores }: { p: Protocolo; res: Resultado
   const direcionar = () => {
     const retornos = [...p.retornos.filter((r) => r.feitoEm), { combinadoPara: deInput(retorno)! }];
     atualizar(p.id, { ...gravarResultado(), retornos }, { tipo: 'triagem', detalhe: res.motivos.join(' | ') });
+    registrarFotoVeiculo(p.id, 'direcionado');
     const os = (p.ordens ?? []).at(-1);
     mudarEstado(p.id, 'direcionado', `prestador ${os?.prestadorNome ?? prestadores.find((x) => x.id === p.prestadorId)?.nome} · ${resumoOrdens(p) || 'sem OS'}`);
   };
 
   const passar = () => {
     atualizar(p.id, gravarResultado(), { tipo: 'passagem', detalhe: resumoSBAR(p, res, veiculo) });
+    registrarFotoVeiculo(p.id, 'passado_adiante');
     mudarEstado(p.id, 'com_analista');
   };
 
@@ -571,6 +573,21 @@ function HistoricoVeiculo({ frota, km, veiculo }: { frota: string; km: string; v
 // Passos em que não há frase para o motorista: a IA só ajuda a decidir (queixa, nível).
 const SEM_FALA: Passo[] = ['queixa', 'nivel'];
 
+/** Guarda no protocolo a orientação que o painel mostrou em cada bloco (só quando muda). */
+function guardarOrientacao(id: string, passo: Passo, momento: number, item: string | undefined, r: RespostaIA) {
+  const atual = lerBanco().protocolos.find((x) => x.id === id);
+  if (!atual) return;
+  const nova: OrientacaoMostrada = {
+    em: new Date().toISOString(), autor: lerBanco().usuario?.nome ?? '', passo, momento, item,
+    fonte: r.fonte, aviso: r.aviso, fala: r.fala_sugerida, dica: r.dica, atencao: r.atencao,
+    ja_respondidos: r.ja_respondidos, falta_perguntar: r.falta_perguntar, falhas: r.falhas, queixa_sugerida: r.queixa_sugerida, ms: r.ms,
+  };
+  const ultima = atual.orientacoesIA?.at(-1);
+  const semData = (o?: OrientacaoMostrada) => o && JSON.stringify({ ...o, em: '', autor: '', ms: 0 });
+  if (semData(ultima) === semData(nova)) return;
+  atualizar(id, { orientacoesIA: [...(atual.orientacoesIA ?? []), nova] });
+}
+
 function useOrientacao(p: Protocolo | undefined, itens: ItemArvore[], res: ResultadoTriagem, ponto: Ponto, guia: { fala?: string; atencao: string; dica: string }, veiculo?: Veiculo) {
   const { momento, item: itemAtual, passo } = ponto;
   const [ia, setIa] = useState<RespostaIA | null>(null);
@@ -595,18 +612,20 @@ function useOrientacao(p: Protocolo | undefined, itens: ItemArvore[], res: Resul
       ultimo.current = chave;
       ultimoRelato.current = p.relato;
       const st = await statusIA();
-      if (!st.ativa) { setIa({ ...regras, aviso: avisoIADesligada(st) }); return; }
-      if (momento < 2 || !p.relato.trim()) return;
+      if (!st.ativa) { setIa({ ...regras, aviso: avisoIADesligada(st) }); guardarOrientacao(p.id, passo, momento, itemAtual?.id, regras); return; }
+      if (momento < 2 || !p.relato.trim()) { guardarOrientacao(p.id, passo, momento, itemAtual?.id, regras); return; }
       pedidoAtual.current?.abort(); // descarta o pedido anterior: a conversa já andou
       const ctrl = new AbortController();
       pedidoAtual.current = ctrl;
       setCarregando(true);
-      const r = await pedirIA({ queixa: p.queixa, relato: p.relato, respostas: p.respostas, momento, passo, itemAtual: itemAtual?.id, veiculo: veiculo ? { marca: veiculo.marca, modelo: veiculo.modelo, classe: veiculo.classe } : undefined }, ctrl.signal);
+      const r = await pedirIA({ protocoloId: p.id, queixa: p.queixa, relato: p.relato, respostas: p.respostas, momento, passo, itemAtual: itemAtual?.id, veiculo: veiculo ? { marca: veiculo.marca, modelo: veiculo.modelo, classe: veiculo.classe } : undefined }, ctrl.signal);
       if (r === null || ctrl.signal.aborted) return;
       setCarregando(false);
-      setIa('erro' in r ? { ...regras, aviso: `IA indisponível (${r.erro}). Orientação pelas regras.` }
+      const final: RespostaIA = 'erro' in r ? { ...regras, aviso: `IA indisponível (${r.erro}). Orientação pelas regras.` }
         : SEM_FALA.includes(passo) ? { ...r, fala_sugerida: undefined, atencao: guia.atencao } // sem frase ao motorista neste passo
-        : { ...r, fala_sugerida: r.fala_sugerida || guia.fala, atencao: r.atencao || guia.atencao });
+        : { ...r, fala_sugerida: r.fala_sugerida || guia.fala, atencao: r.atencao || guia.atencao };
+      setIa(final);
+      guardarOrientacao(p.id, passo, momento, itemAtual?.id, final);
     }, espera);
     return () => clearTimeout(t);
   }, [chave]); // eslint-disable-line react-hooks/exhaustive-deps

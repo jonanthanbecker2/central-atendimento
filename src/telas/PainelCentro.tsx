@@ -1,8 +1,12 @@
 // Painel do centro de coleta (RF-90 a RF-93): só leitura, sem relato, motorista ou orçamento.
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { NUVEM, lerPainelCentro } from '../dados/nuvem';
+import type { Protocolo } from '../types';
 import { useBanco } from '../dados/store';
 import { queixaPorId } from '../conteudo';
 import { FASE_CENTRO, fmtData } from '../ui';
+
+type Linha = { id: string; frota: string; queixa: string; estado: Protocolo['estado']; prestador: string; previsaoLiberacao?: string; abertoEm: string };
 
 export function PainelCentro() {
   const b = useBanco();
@@ -11,10 +15,24 @@ export function PainelCentro() {
   const [centro, setCentro] = useState(fixo ?? '');
   const c = fixo ?? centro;
   const centroDe = (frota: string) => b.veiculos.find((v) => v.frota === frota)?.centro;
-  const parados = b.protocolos
-    .filter((p) => !p.liberadoEm && p.frota && (!c || centroDe(p.frota) === c))
-    .sort((a, x) => (a.previsaoLiberacao ?? 'z').localeCompare(x.previsaoLiberacao ?? 'z'));
+  // Online, o perfil "centro" não lê protocolos: recebe só estas colunas do banco (ca_painel_centro).
+  const soPainel = NUVEM && b.usuario?.perfil === 'centro';
+  const [remotos, setRemotos] = useState<Linha[] | null>(null);
+  const [erro, setErro] = useState('');
+  useEffect(() => {
+    if (!soPainel) return;
+    const ler = () => lerPainelCentro().then((l) => { setErro(''); setRemotos(l.map((x) => ({ id: x.id, frota: x.frota, queixa: x.queixa ?? '', estado: x.estado, prestador: x.prestador_nome ?? '—', previsaoLiberacao: x.previsao_liberacao ?? undefined, abertoEm: x.aberto_em }))); })
+      .catch((e: Error) => setErro(`Não foi possível ler o painel: ${e.message}`));
+    ler();
+    const t = setInterval(ler, 15000);
+    return () => clearInterval(t);
+  }, [soPainel]);
   const prest = (id?: string) => (id === 'spot' ? 'Spot' : b.prestadores.find((x) => x.id === id)?.nome ?? '—');
+  const locais: Linha[] = b.protocolos
+    .filter((p) => !p.liberadoEm && p.frota && (!c || centroDe(p.frota) === c))
+    .map((p) => ({ id: p.id, frota: p.frota, queixa: p.queixa, estado: p.estado, prestador: prest(p.prestadorId), previsaoLiberacao: p.previsaoLiberacao, abertoEm: p.abertoEm }));
+  const parados = (soPainel ? remotos ?? [] : locais)
+    .sort((a, x) => (a.previsaoLiberacao ?? 'z').localeCompare(x.previsaoLiberacao ?? 'z'));
 
   return (
     <div className="fila">
@@ -28,6 +46,7 @@ export function PainelCentro() {
         </label>
       )}
       <p className="suave">Atualiza sozinho. Quem avisa o centro sobre a parada é o próprio coletor; aqui o centro acompanha a fase e a previsão.</p>
+      {erro && <p className="aviso">{erro}</p>}
       {parados.length === 0 ? <p className="suave">Nenhum caminhão parado.</p> : (
         <table>
           <thead><tr><th>Frota</th><th>Queixa</th><th>Fase do atendimento</th><th>Prestador</th><th>Previsão de liberação</th><th>Aberto em</th></tr></thead>
@@ -39,7 +58,7 @@ export function PainelCentro() {
                   <td><b>{p.frota}</b></td>
                   <td>{queixaPorId(p.queixa)?.nome ?? '—'}</td>
                   <td>{FASE_CENTRO[p.estado]}</td>
-                  <td>{prest(p.prestadorId)}</td>
+                  <td>{p.prestador}</td>
                   <td>{p.previsaoLiberacao ? fmtData(p.previsaoLiberacao) : 'a definir'}{venc ? ' · vencida' : ''}</td>
                   <td>{fmtData(p.abertoEm)}</td>
                 </tr>
